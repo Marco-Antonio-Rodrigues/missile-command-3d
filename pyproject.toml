@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "missile-command-3d"
+version = "0.1.0"
+description = ""
+authors = ["Marco Antonio Rodrigues Gomes de Souza <94053824+Marco-Antonio-Rodrigues@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+black = "^23.11.0"
+isort = "^5.12.0"
+prospector = "^1.10.3"
+pyopengl = "^3.1.7"
+pygame = "^2.5.2"
+pillow = "^10.1.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
