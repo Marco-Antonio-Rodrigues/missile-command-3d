@@ -1,63 +1,62 @@
-import math
-import random
-
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
 list_missile = []
 
+from OpenGL.GL import *
+from OpenGL.GLU import *
+
+from app.colision import Colision
+from app.utils import load_obj, load_texture
+
 
 class Missile:
-    def __init__(self, x=0, y=0, ray=0.5, edges=36):
-        self.x = x
-        self.y = y
-        self.ray = ray
-        self.edges = edges
+    def __init__(self, start, target, scale=0.15, rotation=0):
+        self.target = target
+        self.start = start
+        self.pos = start
+        self.scale = scale
+        self.rotation = rotation
+        self.vertices, self.faces = load_obj("assets/missile.obj")
+        self.texture = load_texture("images/texture.png")
         list_missile.append(self)
 
-    def draw(self, pos_x=None, pos_y=None, ray=None, edges=None):
-        if pos_x:
-            self.x = pos_x
-        if pos_y:
-            self.y = pos_y
-        if ray:
-            self.ray = ray
-        if edges:
-            self.edges = edges
-
-        pos_x = self.x
-        pos_y = self.y
-
-        colors_list = [
-            (1, 0, 0),
-            (1, 1, 0),
-            (1, 1, 1),
-            (1, 0.8, 0),
-            (1, 0.6, 0),
-            (1, 0.4, 0),
-        ]
-        number_random = random.randint(0, len(colors_list) - 1)
-        glColor(colors_list[number_random])
-
+    def draw(self):
         glPushMatrix()
-        glTranslatef(pos_x, pos_y, 0)
-        glScalef(self.ray / 2, self.ray / 2, 1)  # Matriz de escala uniforme
-
-        glBegin(GL_POLYGON)
-        for i in range(0, self.edges):
-            ang = i * (2.0 * math.pi / self.edges)
-            x = math.cos(ang)
-            y = math.sin(ang)
-            glVertex2f(x, y)
-
-        glEnd()
+        glEnable(GL_DEPTH_TEST)
+        glEnable(GL_TEXTURE_2D)
+        glBindTexture(GL_TEXTURE_2D, self.texture)
+        glTranslatef(self.pos[0], self.pos[1], self.pos[2])
+        # glRotatef(self.rotation,0,1, 0)
+        glRotatef(-90, 1, 0, 0)
+        glScalef(self.scale, self.scale, self.scale)
+        for face in self.faces:
+            if len(face) == 4:
+                glBegin(GL_QUADS)
+            else:
+                glBegin(GL_POLYGON)
+            for vertex_index in face:
+                vertex = self.vertices[vertex_index - 1]
+                glTexCoord3f(vertex[0], vertex[1], vertex[2])
+                glVertex3fv(vertex)
+            glEnd()
+        glDisable(GL_TEXTURE_2D)
+        glDisable(GL_DEPTH_TEST)
         glPopMatrix()
-        glFlush()
 
-    def update(self):  # Aumenta o raio de efeito do missil
-        if self.ray < 1:
-            self.ray += 0.002
-            self.draw()
-        else:
+    def update(self):
+        # Verifica se o missile chegou ao alvo com uma margem de erro
+        margin_of_error = 0.1
+        distance_to_target = (
+            sum((self.pos[i] - self.target[i]) ** 2 for i in range(3)) ** 0.5
+        )
+
+        if distance_to_target < margin_of_error:
+            Colision(self.pos[0], self.pos[1])
             list_missile.remove(self)
             del self
+        else:
+            self.rotation += 1
+            for i in range(3):
+                self.pos[i] += (self.target[i] - self.start[i]) * 0.02
+            self.draw()
