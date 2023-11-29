@@ -52,7 +52,7 @@ class Missile:
         )
 
         if distance_to_target < margin_of_error:
-            Colision(self.pos[0], self.pos[1])
+            Colision(self.pos[0]*23.5, self.pos[1]*23.7)
             list_missile.remove(self)
             del self
         else:
