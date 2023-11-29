@@ -6,7 +6,7 @@ list_missile = []
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
-from app.colision import Colision
+from app.explosion import Explosion
 from app.utils import load_obj, load_texture
 
 
@@ -27,7 +27,7 @@ class Missile:
         glEnable(GL_TEXTURE_2D)
         glBindTexture(GL_TEXTURE_2D, self.texture)
         glTranslatef(self.pos[0], self.pos[1], self.pos[2])
-        # glRotatef(self.rotation,0,1, 0)
+        glRotatef(self.rotation,0,0, 1)
         glRotatef(-90, 1, 0, 0)
         glScalef(self.scale, self.scale, self.scale)
         for face in self.faces:
@@ -52,7 +52,7 @@ class Missile:
         )
 
         if distance_to_target < margin_of_error:
-            Colision(self.pos[0]*23.5, self.pos[1]*23.7)
+            Explosion(self.pos[0]*23.5, self.pos[1]*23.7)
             list_missile.remove(self)
             del self
         else:

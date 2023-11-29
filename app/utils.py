@@ -44,23 +44,24 @@ def load_texture(filename):
 
 
 def game_over(width, height, texture):
+    config_2d()
     glEnable(GL_TEXTURE_2D)
     # Desenhando game over
-    glColor((1, 1, 0))
     glPushMatrix()
     glScalef(width / 4, height / 4, 1)
     glBindTexture(GL_TEXTURE_2D, texture)
     glBegin(GL_QUADS)
 
-    glTexCoord2f(0, 0), glVertex3f(-1, -1, 1)
-    glTexCoord2f(1, 0), glVertex3f(1, -1, 1)
-    glTexCoord2f(1, 1), glVertex3f(1, 1, 1)
-    glTexCoord2f(0, 1), glVertex3f(-1, 1, 1)
+    glTexCoord2f(0, 0), glVertex3f(-1, -1, 0)
+    glTexCoord2f(1, 0), glVertex3f(1, -1, 0)
+    glTexCoord2f(1, 1), glVertex3f(1, 1, 0)
+    glTexCoord2f(0, 1), glVertex3f(-1, 1, 0)
 
     glEnd()
     glDisable(GL_TEXTURE_2D)
     glPopMatrix()
-
+    glFlush()
+    pg.display.flip()
 
 def tela_for_mundo_2d(x_tela, y_tela):
     x_tela_centro = x_tela - WIDTH / 2
@@ -127,5 +128,14 @@ def config_3d():
 
 def resize_viewport(width_tela, height_tela):
     global WIDTH, HEIGHT, WIDTH_WORLD, HEIGHT_WORLD
+    aspect = float(width_tela/height_tela )
+    WIDTH = width_tela
+    HEIGHT = height_tela
     glViewport(0, 0, int(WIDTH), int(HEIGHT))
+    glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
+    if width_tela >= height_tela:
+        glOrtho(-WIDTH_WORLD / 2*aspect, WIDTH_WORLD / 2*aspect, -HEIGHT_WORLD / 2, HEIGHT_WORLD / 2, -1, 1)
+    else:
+        glOrtho(-WIDTH_WORLD / 2, WIDTH_WORLD / 2, (-HEIGHT_WORLD / 2)/aspect, (HEIGHT_WORLD / 2)/aspect, -1, 1)
+        

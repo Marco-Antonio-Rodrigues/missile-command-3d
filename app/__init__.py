@@ -8,7 +8,7 @@ from OpenGL.GLU import *
 from pygame.locals import *
 
 from app.asteroids import Asteroids, list_asteroids
-from app.colision import list_colision
+from app.explosion import list_explosion
 from app.constants import HEIGHT, HEIGHT_WORLD, WIDTH, WIDTH_WORLD
 from app.missile import Missile, list_missile
 from app.status_panel import draw_hp, draw_scoreboard
@@ -90,27 +90,27 @@ def draw():
             impact.play()  # toca o som do impacto do asteroide na terra
             life -= 20
 
-    for colision in list_colision:  # Atualiza o Status das colisões
-        colision.update()
+    for explosion in list_explosion:
+        explosion.update()
 
     draw_scoreboard(asteroids_killed, -WIDTH_WORLD / 2 * 0.95, HEIGHT_WORLD / 2 * 0.95)
     draw_hp(life, WIDTH_WORLD / 2 * 0.8, HEIGHT_WORLD / 2 * 0.95)
 
-    # for asteroid in list_asteroids:  # Checa se uma explosão atingiu um asteroide
-    #     for missile in list_missile:
-    #         if asteroid.Colide(missile.x, missile.y, missile.ray):
-    #             expmis.play()  # toca o som da explosao acertando um asteroide
-    #             asteroids_killed += 1
-    #             break
+    for asteroid in list_asteroids:  # Checa se uma explosão atingiu um asteroide
+        for explosion in list_explosion:
+            if asteroid.Colide(explosion.x, explosion.y, explosion.ray):
+                # expmis.play()  # toca o som da explosao acertando um asteroide
+                asteroids_killed += 1
+                break
 
     config_3d()
-    for missile in list_missile:  # Atualiza o Status das Explosoes
+    for missile in list_missile:
         missile.update()
 
 
-music_thread = threading.Thread(
-    target=toca_musica, args=(game_over_flag,)
-)  # cria um thread exclusivo para tocar a musica sem afetar o jogo
+# music_thread = threading.Thread(
+#     target=toca_musica, args=(game_over_flag,)
+# )  # cria um thread exclusivo para tocar a musica sem afetar o jogo
 
 
 def main():
@@ -125,7 +125,7 @@ def main():
 
     time_click = 1000
     last_click = 0
-    music_thread.start()
+    # music_thread.start()
     while True:
         if (
             asteroids_killed == dif + 20
@@ -149,22 +149,21 @@ def main():
                     x_tela, y_tela = event.pos
                     target = tela_for_mundo_3d(x_tela, y_tela)
                     if True:
-                        expmis.play()  # toca o som da explosao
+                        # expmis.play()  # toca o som da explosao
                         config_3d()
-                        start = glGetDoublev(GL_MODELVIEW_MATRIX)
+                        start = list(glGetDoublev(GL_MODELVIEW_MATRIX))
                         start = [start[3][0], start[3][1], start[3][2]]
                         Missile(start, target)
 
             if event.type == pg.VIDEORESIZE:
                 width, height = event.size
                 resize_viewport(width, height)
-
         draw()
-        CLOCK.tick(60)
         if life == 0:
-            game_over_flag = True  # verificador para fazer a musica do jogo parar
+            game_over_flag = True
             game_over(WIDTH_WORLD, HEIGHT_WORLD, texture_game_over)
-            pg.mixer.music.load("audio/mgameover.mp3")  # toca musica de gameover
-            pg.mixer.music.play()
-            sleep(5)  # deixar em 5 segundos, pois eh a duracao da musica de gameover
+            # pg.mixer.music.load("audio/mgameover.mp3")
+            # pg.mixer.music.play()
+            sleep(2)
             quit()
+        CLOCK.tick(60)

@@ -4,9 +4,8 @@ import random
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
-from app.colision import Colision
+from app.explosion import Explosion
 from app.constants import HEIGHT_WORLD, WIDTH_WORLD
-from app.missile import Missile
 
 list_asteroids = []
 
@@ -56,8 +55,7 @@ class Asteroids:
         if x and y and ray:
             distance = math.sqrt((self.xaux - x) ** 2 + (self.yaux - y) ** 2)
             if distance < self.ray or distance < ray:
-                Colision(self.xaux, self.yaux - self.ray / 2)
-                Missile(self.xaux, self.yaux - self.ray / 2)
+                Explosion(self.xaux, self.yaux - self.ray / 2)
                 list_asteroids.remove(self)
                 del self
                 return True
@@ -69,7 +67,7 @@ class Asteroids:
             self.draw()
             return False
         else:  # Se colidiu com a terra
-            Colision(self.xaux, self.yaux - self.ray)
+            Explosion(self.xaux, self.yaux - self.ray)
             list_asteroids.remove(self)
             del self
             return True
