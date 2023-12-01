@@ -11,7 +11,7 @@ from app.utils import load_obj, load_texture
 
 
 class Missile:
-    def __init__(self, start, target, scale=0.15, rotation=0):
+    def __init__(self, start, target, scale=0.12, rotation=0):
         self.target = target
         self.start = start
         self.pos = start
@@ -52,11 +52,11 @@ class Missile:
         )
 
         if distance_to_target < margin_of_error:
-            Explosion(self.pos[0]*23.5, self.pos[1]*23.7)
+            Explosion(self.pos[0], self.pos[1],self.pos[2])
             list_missile.remove(self)
             del self
         else:
             self.rotation += 1
             for i in range(3):
-                self.pos[i] += (self.target[i] - self.start[i]) * 0.02
+                self.pos[i] += (self.target[i] - self.start[i]) * 0.03
             self.draw()

@@ -138,4 +138,21 @@ def resize_viewport(width_tela, height_tela):
         glOrtho(-WIDTH_WORLD / 2*aspect, WIDTH_WORLD / 2*aspect, -HEIGHT_WORLD / 2, HEIGHT_WORLD / 2, -1, 1)
     else:
         glOrtho(-WIDTH_WORLD / 2, WIDTH_WORLD / 2, (-HEIGHT_WORLD / 2)/aspect, (HEIGHT_WORLD / 2)/aspect, -1, 1)
-        
+
+def desenhaTerreno():
+    
+    L = 500
+    incr = 1
+    y = -1
+    # y = -0.5
+    glColor3f(1,1,1)
+    glBegin(GL_LINES)
+    for i in range(-L, L+1, incr):
+		# // Verticais
+        glVertex3f(i,y,-L)
+        glVertex3f(i,y,L)
+
+		# // Horizontais
+        glVertex3f(-L,y,i)
+        glVertex3f(L,y,i)
+    glEnd()

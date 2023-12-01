@@ -13,13 +13,13 @@ from app.constants import HEIGHT, HEIGHT_WORLD, WIDTH, WIDTH_WORLD
 from app.missile import Missile, list_missile
 from app.status_panel import draw_hp, draw_scoreboard
 from app.utils import (
-    config_2d,
     config_3d,
     game_over,
     load_texture,
     resize_viewport,
     tela_for_mundo_3d,
     toca_musica,
+    desenhaTerreno
 )
 
 # configurações iniciais pygames
@@ -45,46 +45,16 @@ game_over_flag = False
 
 
 def scenario(width, height):
-    glEnable(GL_TEXTURE_2D)
-    # Desenhando galaxy
-    glPushMatrix()
-    glBindTexture(GL_TEXTURE_2D, texture_galaxy)
-    glTranslatef(0, height, 0)
-    glScalef(width, height + height * 0.85, 1)
-    glBegin(GL_QUADS)
-
-    glTexCoord2f(0, 0), glVertex3f(-1, -1, 1)
-    glTexCoord2f(1, 0), glVertex3f(1, -1, 1)
-    glTexCoord2f(1, 1), glVertex3f(1, 1, 1)
-    glTexCoord2f(0, 1), glVertex3f(-1, 1, 1)
-
-    glEnd()
-    glPopMatrix()
-
     # Desenhando Base
     glPushMatrix()
-    glBindTexture(GL_TEXTURE_2D, texture_planet)
-    glTranslatef(0, -height + (height * 0.15), 0)
-    glScalef(width, height * 0.15, 1)
-    glBegin(GL_QUADS)
-
-    glTexCoord2f(0, 0), glVertex3f(-1, -1, 1)
-    glTexCoord2f(1, 0), glVertex3f(1, -1, 1)
-    glTexCoord2f(1, 1), glVertex3f(1, 1, 1)
-    glTexCoord2f(0, 1), glVertex3f(-1, 1, 1)
-
-    glEnd()
+    desenhaTerreno()
     glPopMatrix()
-    glDisable(GL_TEXTURE_2D)
-
-
+    
 def draw():
     global asteroids_killed, life
     pg.display.flip()  # atualiza toda a tela
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)  # limpa a tela
-    config_2d()
-    scenario(WIDTH_WORLD / 2, HEIGHT_WORLD / 2)
-
+    config_3d()
     for asteroid in list_asteroids:  # Atualiza o Status dos Asteroides
         if asteroid.update():
             impact.play()  # toca o som do impacto do asteroide na terra
@@ -92,10 +62,7 @@ def draw():
 
     for explosion in list_explosion:
         explosion.update()
-
-    draw_scoreboard(asteroids_killed, -WIDTH_WORLD / 2 * 0.95, HEIGHT_WORLD / 2 * 0.95)
-    draw_hp(life, WIDTH_WORLD / 2 * 0.8, HEIGHT_WORLD / 2 * 0.95)
-
+        
     for asteroid in list_asteroids:  # Checa se uma explosão atingiu um asteroide
         for explosion in list_explosion:
             if asteroid.Colide(explosion.x, explosion.y, explosion.ray):
@@ -103,7 +70,7 @@ def draw():
                 asteroids_killed += 1
                 break
 
-    config_3d()
+    scenario(WIDTH_WORLD / 2, HEIGHT_WORLD / 2)
     for missile in list_missile:
         missile.update()
 
@@ -161,7 +128,7 @@ def main():
         draw()
         if life == 0:
             game_over_flag = True
-            game_over(WIDTH_WORLD, HEIGHT_WORLD, texture_game_over)
+            # game_over(WIDTH_WORLD, HEIGHT_WORLD, texture_game_over)
             # pg.mixer.music.load("audio/mgameover.mp3")
             # pg.mixer.music.play()
             sleep(2)
