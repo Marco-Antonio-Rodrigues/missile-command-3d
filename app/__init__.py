@@ -67,7 +67,7 @@ def draw():
         
     for asteroid in list_asteroids:  # Checa se uma explosão atingiu um asteroide
         for explosion in list_explosion:
-            if asteroid.Colide(explosion.x, explosion.y, explosion.ray):
+            if asteroid.colide(explosion.x, explosion.y, explosion.ray):
                 # expmis.play()  # toca o som da explosao acertando um asteroide
                 asteroids_killed += 1
                 break
@@ -81,12 +81,11 @@ def draw():
 #     target=toca_musica, args=(game_over_flag,)
 # )  # cria um thread exclusivo para tocar a musica sem afetar o jogo
 
-
 def main():
     cond = 40  # Dificuldade, quanto mais perto do 0, mais asteroids aparecem
     dif = 0  # Variável auxiliar, para aumentar a dificuldade
 
-    # global list_asteroids
+    global list_asteroids
     global list_missile
     # global game_over_flag
     # global asteroids_killed
@@ -102,8 +101,8 @@ def main():
         #     cond = cond - 2
         #     dif = dif + 20
 
-        # if len(list_asteroids) < 20 and randint(-cond, cond) == 0:
-        #     Asteroids()
+        if len(list_asteroids) < 20 and randint(-cond, cond) == 0:
+            Asteroids()
 
         for event in pg.event.get():
             if event.type == pg.QUIT:

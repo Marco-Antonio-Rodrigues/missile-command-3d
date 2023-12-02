@@ -145,7 +145,7 @@ def desenhaTerreno():
     incr = 1
     y = -1
     # y = -0.5
-    glColor3f(1,1,1)
+    glColor3f(0,0,1)
     glBegin(GL_LINES)
     for i in range(-L, L+1, incr):
 		# // Verticais

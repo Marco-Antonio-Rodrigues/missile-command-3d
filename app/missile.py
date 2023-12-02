@@ -28,7 +28,7 @@ class Missile:
         glEnable(GL_TEXTURE_2D)
         glBindTexture(GL_TEXTURE_2D, self.texture)
         glTranslatef(self.pos[0], self.pos[1], self.pos[2])
-        glRotatef(self.rotation,0,0, 1)
+        glRotatef(self.rotation, 0, 0, 1)
         glRotatef(-90, 1, 0, 0)
         glScalef(self.scale, self.scale, self.scale)
         for face in self.faces:
@@ -53,6 +53,7 @@ class Missile:
         )
 
         if distance_to_target < margin_of_error:
+            #print(self.pos[2])
             Explosion(8,8,self.pos[0], self.pos[1],self.pos[2])
             list_missile.remove(self)
             del self

@@ -1,59 +1,121 @@
-import math
 import random
+import numpy as np
 
 from OpenGL.GL import *
 from OpenGL.GLU import *
-
+from pygame.locals import *
+from app.utils import load_texture
 from app.explosion import Explosion
 from app.constants import HEIGHT_WORLD, WIDTH_WORLD
 
+
 list_asteroids = []
 
-
 class Asteroids:
-    def __init__(self):
-        self.x = 0
-        self.y = 0
+    def __init__(self, stacks=8, sectors=8, x=0, y=0,z=0,ray=0.5):#adicionar n stacks e sectors
+        self.x = x
+        self.y = y
+        self.z = z
+        self.ray = ray
+        list_asteroids.append(self)
+        self.n_stacks = stacks                                          #fatiamento vertical da esfera sugerido 30
+        self.n_sectors = sectors                                        #fatiamento horizontal da esfera sugerido 30
+        self.texture = load_texture("images/moon.jpg")
+        
         self.xaux = random.randint(-((WIDTH_WORLD / 2) - 1), WIDTH_WORLD / 2 - 1)
         self.yaux = 10
-        self.ray = 0.4 * random.randint(1, 2)
-        self.edges = 36
-        list_asteroids.append(self)
+        self.zaux = -0.9009
 
-    def draw(self, pos_x=None, pos_y=None, ray=None, edges=None):
+    def draw(self, pos_x=None, pos_y=None,pos_z=None):
         if pos_x:
             self.x = pos_x
         if pos_y:
             self.y = pos_y
-        if ray:
-            self.ray = ray
-        if edges:
-            self.edges = edges
+        if pos_z:
+            self.z = pos_z
 
-        pos_x = self.xaux
-        pos_y = self.yaux
+        pos_x = self.x
+        pos_y = self.y
+        pos_z = self.z
+        indices = []
+        pontos = []
+        PI = np.pi
+        delta_Phi = PI / self.n_stacks
+        delta_Theta = 2 * PI / self.n_sectors   
+        
+        for i in range(self.n_stacks + 1):
+            Phi = -PI / 2.0 + i * delta_Phi
+            temp = self.ray * np.cos(Phi)
+            y = self.ray * np.sin(Phi)
+            
+            pt = []
+            
+            for j in range(self.n_sectors):
+                Theta = j * delta_Theta
+                x = temp * np.sin(Theta)
+                z = temp * np.cos(Theta)
 
-        glColor((1, 1, 1))
+                pontos.append(np.array([x,y,z]))
+                index = len(pontos) - 1
+                pt.append(index)
+            indices.append(pt)
+        
 
         glPushMatrix()
-        glTranslatef(pos_x, pos_y, 0)
-        glScalef(self.ray / 2, self.ray / 2, 1)  # matriz de escala uniforme
-        glBegin(GL_POLYGON)
-        for i in range(0, self.edges):
-            ang = i * (2.0 * math.pi / self.edges)
-            x = math.cos(ang)
-            y = math.sin(ang)
-            glVertex2f(x, y)
+        glEnable(GL_DEPTH_TEST)
+        glEnable(GL_TEXTURE_2D)
+        glBindTexture(GL_TEXTURE_2D, self.texture)
+        glRotate(-90, 0, 1, 0)
+        glTranslatef(self.xaux, self.yaux, self.zaux)
+        glScale(self.ray/2, self.ray/2, self.ray/2)
+        glColor3fv((1, 1, 1))
+        glEnable(GL_CULL_FACE)
+        glFrontFace(GL_CCW)
+        glCullFace(GL_BACK)
 
-        glEnd()
+
+        for i in range(self.n_stacks):
+            glBegin(GL_TRIANGLE_STRIP)
+            
+            for j in range(self.n_sectors):
+                index = indices[i][j]
+                x, y, z = pontos[index]
+                u = j / self.n_sectors
+                v = i / self.n_stacks
+                glTexCoord2f(u, v)
+                glVertex3f(pos_x + x, pos_y + y, pos_z + z)
+
+                index = indices[i + 1][j]
+                x, y, z = pontos[index]
+                u = j / self.n_sectors
+                v = (i + 1) / self.n_stacks
+                glTexCoord2f(u, v)
+                glVertex3f(pos_x + x, pos_y + y, pos_z + z)
+
+                if j == self.n_sectors - 1:
+                    index = indices[i][0]
+                    x, y, z = pontos[index]
+                    u = 0
+                    v = i / self.n_stacks
+                    glTexCoord2f(u, v)
+                    glVertex3f(pos_x + x, pos_y + y, pos_z + z)
+
+                    index = indices[i + 1][0]
+                    x, y, z = pontos[index]
+                    u = 0
+                    v = (i + 1) / self.n_stacks
+                    glTexCoord2f(u, v)
+                    glVertex3f(pos_x + x, pos_y + y, pos_z + z)
+
+            glEnd()
         glPopMatrix()
+        glDisable(GL_CULL_FACE)
+        glBindTexture(GL_TEXTURE_2D, 0)
         glFlush()
 
-    def Colide(
-        self, x=None, y=None, ray=None
-    ):  # Checa se o asteroide colidiu e o remove
-        if x and y and ray:
-            distance = math.sqrt((self.xaux - x) ** 2 + (self.yaux - y) ** 2)
+    def colide(self, x=None, y=None, ray=None):  # Checa se o asteroide colidiu e o remove
+        if x and y and ray :
+            distance = np.sqrt((self.xaux - x) ** 2 + (self.yaux - y) ** 2)
             if distance < self.ray or distance < ray:
                 Explosion(self.xaux, self.yaux - self.ray / 2)
                 list_asteroids.remove(self)
@@ -62,12 +124,12 @@ class Asteroids:
         return False
 
     def update(self):
-        if self.yaux > -HEIGHT_WORLD / 2 * 0.8:
+        if self.yaux > -HEIGHT_WORLD / 8: #* 0.8:
             self.yaux -= 0.02
             self.draw()
             return False
         else:  # Se colidiu com a terra
-            Explosion(self.xaux, self.yaux - self.ray)
+            Explosion(8, 8, self.xaux, self.yaux - self.ray, self.zaux)
             list_asteroids.remove(self)
             del self
             return True
