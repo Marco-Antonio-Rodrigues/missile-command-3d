@@ -4,15 +4,13 @@ import numpy as np
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from pygame.locals import *
-from app.utils import load_texture
 from app.explosion import Explosion
-from app.constants import HEIGHT_WORLD, WIDTH_WORLD
-
+from app.texture import Texture
 
 list_asteroids = []
 
 class Asteroids:
-    def __init__(self, stacks=8, sectors=8, x=0, y=0,z=0,ray=0.5):#adicionar n stacks e sectors
+    def __init__(self, stacks=8, sectors=8, x=0, y=4,z=-20,ray=0.5):#adicionar n stacks e sectors
         self.x = x
         self.y = y
         self.z = z
@@ -20,9 +18,9 @@ class Asteroids:
         list_asteroids.append(self)
         self.n_stacks = stacks                                          #fatiamento vertical da esfera sugerido 30
         self.n_sectors = sectors                                        #fatiamento horizontal da esfera sugerido 30
-        self.texture = load_texture("images/moon.jpg")
+        self.texture = Texture("images/moon.jpg")
         
-        self.xaux = random.randint(-((WIDTH_WORLD / 2) - 1), WIDTH_WORLD / 2 - 1)
+        self.xaux = 10
         self.yaux = 10
         self.zaux = -0.9009
 
@@ -43,7 +41,7 @@ class Asteroids:
         delta_Phi = PI / self.n_stacks
         delta_Theta = 2 * PI / self.n_sectors   
         
-        for i in range(self.n_stacks + 1):
+        for i in range(int(self.n_stacks + 1)):
             Phi = -PI / 2.0 + i * delta_Phi
             temp = self.ray * np.cos(Phi)
             y = self.ray * np.sin(Phi)
@@ -64,7 +62,7 @@ class Asteroids:
         glPushMatrix()
         glEnable(GL_DEPTH_TEST)
         glEnable(GL_TEXTURE_2D)
-        glBindTexture(GL_TEXTURE_2D, self.texture)
+        self.texture.bind()
         glRotate(-90, 0, 1, 0)
         glTranslatef(self.xaux, self.yaux, self.zaux)
         glScale(self.ray/2, self.ray/2, self.ray/2)
@@ -74,7 +72,7 @@ class Asteroids:
         glCullFace(GL_BACK)
 
 
-        for i in range(self.n_stacks):
+        for i in range(int(self.n_stacks)):
             glBegin(GL_TRIANGLE_STRIP)
             
             for j in range(self.n_sectors):
@@ -110,8 +108,7 @@ class Asteroids:
             glEnd()
         glPopMatrix()
         glDisable(GL_CULL_FACE)
-        glBindTexture(GL_TEXTURE_2D, 0)
-        glFlush()
+        self.texture.unbind()
 
     def colide(self, x=None, y=None, ray=None):  # Checa se o asteroide colidiu e o remove
         if x and y and ray :
@@ -124,7 +121,7 @@ class Asteroids:
         return False
 
     def update(self):
-        if self.yaux > -HEIGHT_WORLD / 8: #* 0.8:
+        if self.yaux > -2.25: #* 0.8:
             self.yaux -= 0.02
             self.draw()
             return False
