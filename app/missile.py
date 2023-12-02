@@ -22,6 +22,7 @@ class Missile:
         list_missile.append(self)
 
     def draw(self):
+        
         glPushMatrix()
         glEnable(GL_DEPTH_TEST)
         glEnable(GL_TEXTURE_2D)
@@ -52,7 +53,7 @@ class Missile:
         )
 
         if distance_to_target < margin_of_error:
-            Explosion(self.pos[0], self.pos[1],self.pos[2])
+            Explosion(8,8,self.pos[0], self.pos[1],self.pos[2])
             list_missile.remove(self)
             del self
         else:
