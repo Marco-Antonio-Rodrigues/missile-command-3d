@@ -7,8 +7,8 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 
 from app.explosion import Explosion
-from app.utils import load_obj
 from app.texture import Texture
+from app.utils import load_obj
 
 
 class Missile:
@@ -23,7 +23,6 @@ class Missile:
         list_missile.append(self)
 
     def draw(self):
-        
         glPushMatrix()
         glEnable(GL_DEPTH_TEST)
         self.texture.bind()
@@ -53,7 +52,7 @@ class Missile:
         )
 
         if distance_to_target < margin_of_error:
-            Explosion(self.pos[0], self.pos[1],self.pos[2])
+            Explosion(self.pos[0], self.pos[1], self.pos[2])
             list_missile.remove(self)
             del self
         else:

@@ -1,9 +1,10 @@
+import pyautogui
 import pygame as pg
 from OpenGL.GL import *
 from OpenGL.GLU import *
-import pyautogui
 
-from app.constants import WIDTH,HEIGHT, ASPECT
+from app.constants import ASPECT, HEIGHT, WIDTH
+
 
 def game_over(width, height, texture):
     glEnable(GL_TEXTURE_2D)
@@ -23,6 +24,7 @@ def game_over(width, height, texture):
     glPopMatrix()
     glFlush()
     pg.display.flip()
+
 
 def tela_for_mundo_3d(x_tela, y_tela, display=(WIDTH, HEIGHT)):
     x_normalized = float(2 * x_tela / display[0] - 1)
@@ -63,6 +65,7 @@ def toca_musica(game_over_flag):
         if game_over_flag == True:
             pg.mixer.music.stop()
 
+
 def config_3d():
     glEnable(GL_DEPTH_TEST)
     glMatrixMode(GL_PROJECTION)
@@ -70,18 +73,23 @@ def config_3d():
     gluPerspective(45, (WIDTH / HEIGHT), 0.1, 50)
     glMatrixMode(GL_MODELVIEW)
 
+
 def resize_viewport(width, height):
     global WIDTH, HEIGHT, ASPECT
     WIDTH = width
     HEIGHT = height
-    ASPECT = float(WIDTH/HEIGHT)
-    
+    ASPECT = float(WIDTH / HEIGHT)
+
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
     glViewport(0, 0, WIDTH, HEIGHT)
     force_mouse_center()
-  
-def force_mouse_center(): 
+
+
+def force_mouse_center():
     screen_width, screen_height = pyautogui.size()
-    center_x, center_y = screen_width // 2, screen_height // 2# Calcula o centro da tela
+    center_x, center_y = (
+        screen_width // 2,
+        screen_height // 2,
+    )  # Calcula o centro da tela
     pyautogui.moveTo(center_x, center_y)
