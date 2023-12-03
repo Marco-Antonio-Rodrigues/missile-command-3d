@@ -65,19 +65,21 @@ def draw():
     for explosion in list_explosion:
        explosion.update()
        
-    '''  
+    
     for asteroid in list_asteroids:  # Checa se uma explosão atingiu um asteroide
         for explosion in list_explosion:
-            if asteroid.colide(explosion.x, explosion.y, explosion.ray):
+            if asteroid.colide(explosion.x, explosion.y, explosion.z, explosion.ray):
                 # expmis.play()  # toca o som da explosao acertando um asteroide
-                asteroids_killed += 1
-                break
+                #asteroids_killed += 1
+                print("Explodiu")
+                break 
         for missile in list_missile:
-            if asteroid.colide(explosion.x, explosion.y, explosion.ray):
+            if asteroid.colide(missile.pos[0], missile.pos[1], missile.pos[2], 0):
                 # expmis.play()  # toca o som da explosao acertando um asteroide
                 asteroids_killed += 1
+                print("Explodiu")
                 break
-    '''
+
     for missile in list_missile:
         missile.update()
 

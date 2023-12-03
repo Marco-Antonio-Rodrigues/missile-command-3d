@@ -23,7 +23,6 @@ class Asteroids:
         self.n_sectors = sectors            # fatiamento horizontal da esfera
         self.texture = Texture("images/moon.jpg")
 
-
         self.xaux = random.randint(-9,9)
         self.yaux = 3.5
         self.zaux = -10
@@ -117,7 +116,8 @@ class Asteroids:
     def colide(self, x=None, y=None, z=None, ray=None):  # Checa se o asteroide colidiu e o remove
         if x and y and z and ray:
             distance = np.sqrt((self.xaux - x) ** 2 + (self.yaux - y) ** 2 +(self.zaux - z) ** 2)
-            if distance < self.ray or distance < ray:
+            #print(distance)
+            if distance <= self.ray or distance <= ray:
                 Explosion(8, 8, self.xaux, self.yaux - self.ray, self.zaux)
                 list_asteroids.remove(self)
                 del self
@@ -125,19 +125,19 @@ class Asteroids:
         return False
 
     def update(self):
-        if self.yaux > -2 and self.xaux >0: #Se na direita
+        if self.yaux > -2 and self.xaux >0:     #Se na direita
             self.xaux -= self.ajusteX
             self.yaux -= self.ajusteY
             self.zaux +=0.05
             self.draw()
             return False
-        elif self.yaux > -2 and self.xaux < 0:# Se Na esquerda
+        elif self.yaux > -2 and self.xaux < 0:  # Se Na esquerda
             self.xaux += self.ajusteX
             self.yaux -= self.ajusteY
             self.zaux +=0.05
             self.draw()
             return False
-        else:  # Se colidiu com a terra
+        else:                                   # Se colidiu com a terra
             list_asteroids.remove(self)
             del self
             return True
