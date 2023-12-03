@@ -66,7 +66,6 @@ class Missile:
         #print(distance_to_target, end= '  ')
 
         if distance_to_target < margin_of_error:
-            Explosion(self.pos[0], self.pos[1], self.pos[2])
             list_missile.remove(self)
             del self
         else:

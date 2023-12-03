@@ -117,21 +117,21 @@ class Asteroids:
         if x and y and z and ray:
             distance = np.sqrt((self.xaux - x) ** 2 + (self.yaux - y) ** 2 +(self.zaux - z) ** 2)
             #print(distance)
-            if distance <= self.ray or distance <= ray:
-                Explosion(8, 8, self.xaux, self.yaux - self.ray, self.zaux)
+            if distance < self.ray or distance < ray:
+                Explosion(self.xaux, self.yaux, self.zaux)
                 list_asteroids.remove(self)
                 del self
                 return True
         return False
 
     def update(self):
-        if self.yaux > -2 and self.xaux >0:     #Se na direita
+        if self.yaux > -0.5 and self.xaux >0:     #Se na direita
             self.xaux -= self.ajusteX
             self.yaux -= self.ajusteY
             self.zaux +=0.05
             self.draw()
             return False
-        elif self.yaux > -2 and self.xaux < 0:  # Se Na esquerda
+        elif self.yaux > -0.5 and self.xaux < 0:  # Se Na esquerda
             self.xaux += self.ajusteX
             self.yaux -= self.ajusteY
             self.zaux +=0.05
