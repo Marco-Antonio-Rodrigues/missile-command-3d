@@ -35,7 +35,7 @@ class Vec3:
 
 
 class Camera:
-    def __init__(self, pos=Vec3(0, 2, 0)):
+    def __init__(self, pos=Vec3(0, 0, 0)):
         self.m_pos = pos
         self.m_dir = Vec3(0, 0, -1)
         self.m_left = Vec3(-1, 0, 0)

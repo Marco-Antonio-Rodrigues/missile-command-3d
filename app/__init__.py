@@ -63,15 +63,21 @@ def draw():
             life -= 20
 
     for explosion in list_explosion:
-        explosion.update()
-
+       explosion.update()
+       
+    '''  
     for asteroid in list_asteroids:  # Checa se uma explosão atingiu um asteroide
         for explosion in list_explosion:
             if asteroid.colide(explosion.x, explosion.y, explosion.ray):
                 # expmis.play()  # toca o som da explosao acertando um asteroide
                 asteroids_killed += 1
                 break
-
+        for missile in list_missile:
+            if asteroid.colide(explosion.x, explosion.y, explosion.ray):
+                # expmis.play()  # toca o som da explosao acertando um asteroide
+                asteroids_killed += 1
+                break
+    '''
     for missile in list_missile:
         missile.update()
 
@@ -102,9 +108,10 @@ def main():
         # cond = cond - 2
         #     dif = dif + 20
 
-        if len(list_asteroids) < 20:
+        if len(list_asteroids) < 1:
             Asteroids()
-
+            
+            
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 pg.quit()
