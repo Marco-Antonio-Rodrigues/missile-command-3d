@@ -12,7 +12,7 @@ class Ground:
         self.texture = Texture("images/piso.jpg")
 
     def draw(self):
-        y = -0.5
+        y = 0
         glColor3f(1, 0.8, 0.6)
         self.texture.bind()
         glBegin(GL_QUADS)

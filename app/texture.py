@@ -11,7 +11,7 @@ class Texture:
         self.m_canais = 0
         self.load(filePath, mipmap)
 
-    def load(self, filePath, mipmap=False):
+    def load(self, filePath,mipmap):
         img = Image.open(filePath).transpose(Image.FLIP_TOP_BOTTOM)
         imgData = img.convert("RGBA").tobytes()
 
