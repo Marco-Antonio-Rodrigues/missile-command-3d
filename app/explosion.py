@@ -1,26 +1,31 @@
 import random
-import numpy as np
 
+import numpy as np
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from pygame.locals import *
-from app.utils import load_texture
+
+from app.texture import Texture
+
 list_explosion = []
 
-#ponto reset
+# ponto reset
+
 
 class Explosion:
-    def __init__(self, stacks, sectors, x=0, y=0,z=0,ray=0.005):#adicionar n stacks e sectors
+    def __init__(
+        self, x=0, y=0, z=0, ray=0.005, stacks=8, sectors=8
+    ):  # adicionar n stacks e sectors
         self.x = x
         self.y = y
         self.z = z
         self.ray = ray
         list_explosion.append(self)
-        self.n_stacks = stacks#fatiamento vertical da esfera sugerido 30
-        self.n_sectors = sectors#fatiamento horizontal da esfera sugerido 30
-        self.texture = load_texture("images/sun.jpg")
+        self.n_stacks = stacks  # fatiamento vertical da esfera sugerido 30
+        self.n_sectors = sectors  # fatiamento horizontal da esfera sugerido 30
+        self.texture = Texture("images/sun.jpg", True)
 
-    def draw(self, pos_x=None, pos_y=None,pos_z=None):
+    def draw(self, pos_x=None, pos_y=None, pos_z=None):
         if pos_x:
             self.x = pos_x
         if pos_y:
@@ -35,45 +40,42 @@ class Explosion:
         pontos = []
         PI = np.pi
         delta_Phi = PI / self.n_stacks
-        delta_Theta = 2 * PI / self.n_sectors   
-        
-        for i in range(self.n_stacks + 1):
+        delta_Theta = 2 * PI / self.n_sectors
+
+        for i in range(int(self.n_stacks + 1)):
             Phi = -PI / 2.0 + i * delta_Phi
             temp = self.ray * np.cos(Phi)
             y = self.ray * np.sin(Phi)
-            
+
             pt = []
-            
+
             for j in range(self.n_sectors):
                 Theta = j * delta_Theta
                 x = temp * np.sin(Theta)
                 z = temp * np.cos(Theta)
 
-                pontos.append(np.array([x,y,z]))
+                pontos.append(np.array([x, y, z]))
                 index = len(pontos) - 1
                 pt.append(index)
             indices.append(pt)
-            
-            
 
-        #colors_list = [(1, 0, 0), (0.4, 0, 0), (0.2, 0, 0), (1, 0.5, 0)]
+        # colors_list = [(1, 0, 0), (0.4, 0, 0), (0.2, 0, 0), (1, 0.5, 0)]
 
         glPushMatrix()
         glEnable(GL_DEPTH_TEST)
-        glEnable(GL_TEXTURE_2D)
-        glBindTexture(GL_TEXTURE_2D, self.texture)
-        glTranslatef(pos_x, pos_y,pos_z)
-        glScale(self.ray/2, self.ray/2, self.ray/2)
-        glColor3fv((1, 0, 0))
+        self.texture.bind()
+        glTranslatef(pos_x, pos_y, pos_z)
+        glScale(self.ray / 2, self.ray / 2, self.ray / 2)
+        glColor3fv((1, 1, 1))
         glEnable(GL_CULL_FACE)
         glFrontFace(GL_CCW)
         glCullFace(GL_BACK)
 
-          # Cor das partículas (vermelho)
+        # Cor das partículas (vermelho)
 
-        for i in range(self.n_stacks):
+        for i in range(int(self.n_stacks)):
             glBegin(GL_TRIANGLE_STRIP)
-            
+
             for j in range(self.n_sectors):
                 index = indices[i][j]
                 x, y, z = pontos[index]
@@ -107,8 +109,7 @@ class Explosion:
             glEnd()
         glPopMatrix()
         glDisable(GL_CULL_FACE)
-        glBindTexture(GL_TEXTURE_2D, 0)
-        glFlush()
+        self.texture.unbind()
 
     def update(self):  # Animação da explosão
         if self.ray < 0.4:

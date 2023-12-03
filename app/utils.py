@@ -1,50 +1,12 @@
+import pyautogui
 import pygame as pg
 from OpenGL.GL import *
 from OpenGL.GLU import *
-from PIL import Image
 
-from app.constants import HEIGHT, HEIGHT_WORLD, WIDTH, WIDTH_WORLD
-
-
-def load_texture(filename):
-    # carregamento da textura feita pelo módulo PIL
-    img = Image.open(filename)  # abrindo o arquivo da textura
-    img = img.transpose(
-        Image.FLIP_TOP_BOTTOM
-    )  # espelhando verticalmente a textura (normalmente, a coordenada y das imagens cresce de cima para baixo)
-    imgData = img.convert(
-        "RGBA"
-    ).tobytes()  # convertendo a imagem carregada em bytes que serão lidos pelo OpenGL
-
-    # criando o objeto textura dentro da máquina OpenGL
-    texId = glGenTextures(1)  # criando um objeto textura
-    glBindTexture(GL_TEXTURE_2D, texId)  # tornando o objeto textura recém criado ativo
-    glTexParameteri(
-        GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR
-    )  # definindo que textura será suavizada ao ser aplicada no objeto
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
-    glTexEnvf(
-        GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE
-    )  # definindo que a cor da textura substituirá a cor do polígono
-    glTexImage2D(
-        GL_TEXTURE_2D,
-        0,
-        GL_RGBA,
-        img.width,
-        img.height,
-        0,
-        GL_RGBA,
-        GL_UNSIGNED_BYTE,
-        imgData,
-    )  # enviando os dados lidos pelo módulo PIL para a OpenGL
-    glBindTexture(GL_TEXTURE_2D, 0)  # tornando o objeto textura inativo por enquanto
-
-    # retornando o identificador da textura recém-criada
-    return texId
+from app.constants import ASPECT, HEIGHT, WIDTH
 
 
 def game_over(width, height, texture):
-    config_2d()
     glEnable(GL_TEXTURE_2D)
     # Desenhando game over
     glPushMatrix()
@@ -62,13 +24,6 @@ def game_over(width, height, texture):
     glPopMatrix()
     glFlush()
     pg.display.flip()
-
-def tela_for_mundo_2d(x_tela, y_tela):
-    x_tela_centro = x_tela - WIDTH / 2
-    y_tela_centro = y_tela - HEIGHT / 2
-    x_mundo = x_tela_centro * (WIDTH_WORLD / WIDTH)
-    y_mundo = y_tela_centro * (HEIGHT_WORLD / HEIGHT)
-    return x_mundo, y_mundo
 
 
 def tela_for_mundo_3d(x_tela, y_tela, display=(WIDTH, HEIGHT)):
@@ -111,48 +66,30 @@ def toca_musica(game_over_flag):
             pg.mixer.music.stop()
 
 
-def config_2d():
-    glMatrixMode(GL_PROJECTION)
-    glLoadIdentity()
-    glOrtho(
-        -WIDTH_WORLD / 2, WIDTH_WORLD / 2, -HEIGHT_WORLD / 2, HEIGHT_WORLD / 2, -1, 1
-    )
-
-
 def config_3d():
+    glEnable(GL_DEPTH_TEST)
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
     gluPerspective(45, (WIDTH / HEIGHT), 0.1, 50)
     glMatrixMode(GL_MODELVIEW)
 
 
-def resize_viewport(width_tela, height_tela):
-    global WIDTH, HEIGHT, WIDTH_WORLD, HEIGHT_WORLD
-    aspect = float(width_tela/height_tela )
-    WIDTH = width_tela
-    HEIGHT = height_tela
-    glViewport(0, 0, int(WIDTH), int(HEIGHT))
+def resize_viewport(width, height):
+    global WIDTH, HEIGHT, ASPECT
+    WIDTH = width
+    HEIGHT = height
+    ASPECT = float(WIDTH / HEIGHT)
+
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
-    if width_tela >= height_tela:
-        glOrtho(-WIDTH_WORLD / 2*aspect, WIDTH_WORLD / 2*aspect, -HEIGHT_WORLD / 2, HEIGHT_WORLD / 2, -1, 1)
-    else:
-        glOrtho(-WIDTH_WORLD / 2, WIDTH_WORLD / 2, (-HEIGHT_WORLD / 2)/aspect, (HEIGHT_WORLD / 2)/aspect, -1, 1)
+    glViewport(0, 0, WIDTH, HEIGHT)
+    force_mouse_center()
 
-def desenhaTerreno():
-    
-    L = 500
-    incr = 1
-    y = -1
-    # y = -0.5
-    glColor3f(0,0,1)
-    glBegin(GL_LINES)
-    for i in range(-L, L+1, incr):
-		# // Verticais
-        glVertex3f(i,y,-L)
-        glVertex3f(i,y,L)
 
-		# // Horizontais
-        glVertex3f(-L,y,i)
-        glVertex3f(L,y,i)
-    glEnd()
+def force_mouse_center():
+    screen_width, screen_height = pyautogui.size()
+    center_x, center_y = (
+        screen_width // 2,
+        screen_height // 2,
+    )  # Calcula o centro da tela
+    pyautogui.moveTo(center_x, center_y)
