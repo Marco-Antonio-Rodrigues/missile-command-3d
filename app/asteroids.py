@@ -26,8 +26,8 @@ class Asteroids:
         self.xaux = random.randint(-9,9)
         self.yaux = 3.5
         self.zaux = -10
-        self.ajusteX = mod(0.005*self.xaux) #Razão de ajuste no eixo X
-        self.ajusteY = mod(0.005*self.yaux)   #Razão de ajuste no eixo Y
+        self.ajusteX = mod(0.0035*self.xaux) #Razão de ajuste no eixo X
+        self.ajusteY = mod(0.01*self.yaux)   #Razão de ajuste no eixo Y
         
 
     def draw(self, pos_x=None, pos_y=None, pos_z=None):
@@ -74,6 +74,8 @@ class Asteroids:
         glEnable(GL_CULL_FACE)
         glFrontFace(GL_CCW)
         glCullFace(GL_BACK)
+        
+        
 
         for i in range(int(self.n_stacks)):
             glBegin(GL_TRIANGLE_STRIP)
@@ -116,22 +118,24 @@ class Asteroids:
     def colide(self, x=None, y=None, z=None, ray=None):  # Checa se o asteroide colidiu e o remove
         if x and y and z and ray:
             distance = np.sqrt((self.xaux - x) ** 2 + (self.yaux - y) ** 2 +(self.zaux - z) ** 2)
-            #print(distance)
-            if distance < self.ray or distance < ray:
+            if distance < self.ray + ray:
+                print(distance, self.ray + ray)
                 Explosion(self.xaux, self.yaux, self.zaux)
-                list_asteroids.remove(self)
-                del self
+                
+                if self in list_asteroids:
+                    list_asteroids.remove(self)
+                    del self
                 return True
         return False
 
     def update(self):
-        if self.yaux > -0.5 and self.xaux >0:     #Se na direita
+        if self.yaux > -1.9 and self.xaux >0:     #Se na direita
             self.xaux -= self.ajusteX
             self.yaux -= self.ajusteY
             self.zaux +=0.05
             self.draw()
             return False
-        elif self.yaux > -0.5 and self.xaux < 0:  # Se Na esquerda
+        elif self.yaux > -1.9 and self.xaux < 0:  # Se Na esquerda
             self.xaux += self.ajusteX
             self.yaux -= self.ajusteY
             self.zaux +=0.05
@@ -139,5 +143,6 @@ class Asteroids:
             return False
         else:                                   # Se colidiu com a terra
             list_asteroids.remove(self)
+            Explosion(self.xaux, self.yaux, self.zaux)
             del self
             return True

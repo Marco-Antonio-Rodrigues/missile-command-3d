@@ -9,7 +9,7 @@ from app.constants import ASPECT, HEIGHT, WIDTH
 
 def game_over(width, height, texture):
     glEnable(GL_TEXTURE_2D)
-    # Desenhando game over
+                                                # Desenhando game over
     glPushMatrix()
     glScalef(width / 4, height / 4, 1)
     glBindTexture(GL_TEXTURE_2D, texture)
@@ -50,19 +50,19 @@ def load_obj(filename):
 
 
 def toca_musica(game_over_flag):
-    # carrega a musica
+                                                    # carrega a musica
     pg.mixer.music.load("audio/mcomeco.mp3")
     pg.mixer.music.play()
     while pg.mixer.music.get_busy():
-        # verifica se deu gameover antes da musica acabar
+                                                    # verifica se deu gameover antes da musica acabar
         if game_over_flag == True:
             pg.mixer.music.stop()
 
-    # carrega o loop da musica
+                                                    # carrega o loop da musica
     pg.mixer.music.load("audio/mloop.mp3")
     pg.mixer.music.play(-1)
     while pg.mixer.music.get_busy():
-        # verifica se deu gameover antes da musica acabar
+                                                    # verifica se deu gameover antes da musica acabar
         if game_over_flag == True:
             pg.mixer.music.stop()
 
@@ -92,7 +92,7 @@ def force_mouse_center():
     center_x, center_y = (
         screen_width // 2,
         screen_height // 2,
-    )  # Calcula o centro da tela
+    )                                                  # Calcula o centro da tela
     pyautogui.moveTo(center_x, center_y)
 
 

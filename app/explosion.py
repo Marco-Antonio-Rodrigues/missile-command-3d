@@ -9,8 +9,6 @@ from app.texture import Texture
 
 list_explosion = []
 
-# ponto reset
-
 
 class Explosion:
     def __init__(
@@ -59,7 +57,6 @@ class Explosion:
                 pt.append(index)
             indices.append(pt)
 
-        # colors_list = [(1, 0, 0), (0.4, 0, 0), (0.2, 0, 0), (1, 0.5, 0)]
 
         glPushMatrix()
         glEnable(GL_DEPTH_TEST)
@@ -70,9 +67,6 @@ class Explosion:
         glEnable(GL_CULL_FACE)
         glFrontFace(GL_CCW)
         glCullFace(GL_BACK)
-
-        # Cor das partículas (vermelho)
-
         for i in range(int(self.n_stacks)):
             glBegin(GL_TRIANGLE_STRIP)
 
@@ -82,14 +76,14 @@ class Explosion:
                 u = j / self.n_sectors
                 v = i / self.n_stacks
                 glTexCoord2f(u, v)
-                glVertex3f(pos_x + x, pos_y + y, pos_z + z)
+                glVertex3f(x, y, z)
 
                 index = indices[i + 1][j]
                 x, y, z = pontos[index]
                 u = j / self.n_sectors
                 v = (i + 1) / self.n_stacks
                 glTexCoord2f(u, v)
-                glVertex3f(pos_x + x, pos_y + y, pos_z + z)
+                glVertex3f(x, y, z)
 
                 if j == self.n_sectors - 1:
                     index = indices[i][0]
@@ -97,14 +91,14 @@ class Explosion:
                     u = 0
                     v = i / self.n_stacks
                     glTexCoord2f(u, v)
-                    glVertex3f(pos_x + x, pos_y + y, pos_z + z)
+                    glVertex3f(x, y, z)
 
                     index = indices[i + 1][0]
                     x, y, z = pontos[index]
                     u = 0
                     v = (i + 1) / self.n_stacks
                     glTexCoord2f(u, v)
-                    glVertex3f(pos_x + x, pos_y + y, pos_z + z)
+                    glVertex3f(x, y, z)
 
             glEnd()
         glPopMatrix()
@@ -112,8 +106,8 @@ class Explosion:
         self.texture.unbind()
 
     def update(self):  # Animação da explosão
-        if self.ray < 0.4:
-            self.ray += 0.002
+        if self.ray < 0.6:
+            self.ray += 0.025
             self.draw()
         else:
             list_explosion.remove(self)

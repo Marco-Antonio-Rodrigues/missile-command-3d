@@ -63,7 +63,6 @@ class Missile:
         distance_to_target = (
             sum((self.pos[i] - self.target[i]) ** 2 for i in range(3)) ** 0.5
         )
-        #print(distance_to_target, end= '  ')
 
         if distance_to_target < margin_of_error:
             list_missile.remove(self)
@@ -72,5 +71,4 @@ class Missile:
             self.rotation += 1
             for i in range(3):
                 self.pos[i] += (self.target[i] - self.start[i]) * 0.05
-            #print(self.pos)
             self.draw()
