@@ -39,7 +39,7 @@ camera = Camera()
 ground = Ground()
 
 asteroids_killed = 0
-# life = 100
+life = 100
 game_over_flag = False
 
 
@@ -48,7 +48,8 @@ def scenario():
     glPushMatrix()
     ground.draw()
     glPopMatrix()
-
+    draw_hp(life,0,4,-20)
+    draw_scoreboard(life,-10,4,-20)
 
 def draw():
     global asteroids_killed, life
@@ -116,7 +117,9 @@ def main():
                     # expmis.play()  # toca o som da explosao
                     start = list(glGetDoublev(GL_MODELVIEW_MATRIX))
                     start = [start[3][0], start[3][1], start[3][2]]
-                    target = [camera.pos_mira.x, camera.pos_mira.y, camera.pos_mira.z]
+                    escalar = float(abs(5/camera.pos_mira.z))
+                    target = [camera.pos_mira.x*escalar, camera.pos_mira.y*escalar, camera.pos_mira.z*escalar]
+                    # target = [camera.pos_mira.x, camera.pos_mira.y, camera.pos_mira.z]
                     Missile(start, target)
 
             if event.type == pg.VIDEORESIZE:

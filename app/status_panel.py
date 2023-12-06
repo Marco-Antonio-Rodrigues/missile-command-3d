@@ -112,24 +112,24 @@ def draw_digitos(digitos):
 
 
 # Função para desenhar os pontos
-def draw_scoreboard(digitos, x, y):
+def draw_scoreboard(digitos, x, y,z):
     glColor3f(1, 1, 1)
     glPushMatrix()
-    glTranslatef(x, y, 0)
+    glTranslatef(x, y, z)
     draw_digitos(digitos)
     glPopMatrix()
 
 
 # Função para desenhar o HP
-def draw_hp(digitos, x, y):
+def draw_hp(digitos, x, y,z):
     glColor3f(1, 1, 1)
     glPushMatrix()
-    glTranslatef(x - 2.5, y, 0)
+    glTranslatef(x - 2.5, y, z)
     draw_digitos("HP:")
     glPopMatrix()
 
     glPushMatrix()
-    glTranslatef(x, y, 0)
+    glTranslatef(x, y, z)
     if digitos >= 80:
         glColor3f(0, 1, 0)
 

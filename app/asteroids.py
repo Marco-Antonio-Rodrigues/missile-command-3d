@@ -13,9 +13,11 @@ list_asteroids = []
 
 
 class Asteroids:
-    def __init__(self, stacks=8, sectors=8, x=None, y=3.5, z=-5, ray=0.5):
+    def __init__(self, stacks=8, sectors=8, x=None, y=None, z=-5, ray=0.5):
         if x is None:
             x = random.randint(-9, 9)
+        if y is None:
+            y = random.randint(4, 6)
         self.x = x
         self.y = y
         self.z = z
@@ -26,7 +28,7 @@ class Asteroids:
         self.texture = Texture("images/moon.jpg")
         
         self.ajusteX = mod(0.005 * self.x)  # Razão de ajuste no eixo X
-        self.ajusteY = mod(0.005 * self.y)  # Razão de ajuste no eixo Y
+        self.ajusteY = mod(0.002 * self.y)  # Razão de ajuste no eixo Y
 
     def draw(self, pos_x=None, pos_y=None, pos_z=None):
         if pos_x:
@@ -118,7 +120,7 @@ class Asteroids:
             distance = np.sqrt(
                 (self.x - x) ** 2 + (self.y - y) ** 2 + (self.z - z) ** 2
             )
-            if distance < (self.ray+ray):
+            if distance < self.ray*0.85:
                 Explosion(self.x, self.y, self.z,self.ray)
                 list_asteroids.remove(self)
                 del self

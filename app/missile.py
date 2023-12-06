@@ -9,6 +9,7 @@ from OpenGL.GLU import *
 from app.explosion import Explosion
 from app.texture import Texture
 from app.utils import load_obj
+from math import degrees,sin
 
 
 class Missile:
@@ -18,6 +19,7 @@ class Missile:
         self.pos = start
         self.scale = scale
         self.rotation = rotation
+        self.rotation_x = degrees(sin(target[1]))
         self.vertices, self.faces = load_obj("assets/missile.obj")
         self.texture = Texture("images/texture.png")
         list_missile.append(self)
@@ -28,7 +30,7 @@ class Missile:
         self.texture.bind()
         glTranslatef(self.pos[0], self.pos[1], self.pos[2])
         glRotatef(self.rotation, 0, 0, 1)
-        glRotatef(-90, 1, 0, 0)
+        glRotatef(-90+self.rotation_x, 1, 0, 0)
         glScalef(self.scale, self.scale, self.scale)
         for face in self.faces:
             if len(face) == 4:
@@ -46,7 +48,7 @@ class Missile:
 
     def update(self):
         # Verifica se o missile chegou ao alvo com uma margem de erro
-        margin_of_error = 0.005
+        margin_of_error = 0.009
         distance_to_target = (
             sum((self.pos[i] - self.target[i]) ** 2 for i in range(3)) ** 0.5
         )
