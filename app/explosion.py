@@ -25,7 +25,7 @@ class Explosion:
         self.n_sectors = sectors  # fatiamento horizontal da esfera sugerido 30
         self.texture = Texture("images/sun.jpg", True)
 
-    def draw(self, pos_x=None, pos_y=None, pos_z=None):
+    def draw(self, light, pos_x=None, pos_y=None, pos_z=None):
         if pos_x:
             self.x = pos_x
         if pos_y:
@@ -59,10 +59,8 @@ class Explosion:
                 pt.append(index)
             indices.append(pt)
 
-        # colors_list = [(1, 0, 0), (0.4, 0, 0), (0.2, 0, 0), (1, 0.5, 0)]
-
+        
         glPushMatrix()
-        glEnable(GL_DEPTH_TEST)
         self.texture.bind()
         glTranslatef(pos_x, pos_y, pos_z)
         glScale(self.ray / 2, self.ray / 2, self.ray / 2)
@@ -71,7 +69,6 @@ class Explosion:
         glFrontFace(GL_CCW)
         glCullFace(GL_BACK)
 
-        # Cor das partículas (vermelho)
 
         for i in range(int(self.n_stacks)):
             glBegin(GL_TRIANGLE_STRIP)
@@ -111,10 +108,11 @@ class Explosion:
         glDisable(GL_CULL_FACE)
         self.texture.unbind()
 
-    def update(self):  # Animação da explosão
+    def update(self, light):  # Animação da explosão
         if self.ray < 1.5:
-            self.ray += 0.05
-            self.draw()
+            if light == 0:
+                self.ray += 0.05
+                self.draw(light)
         else:
             list_explosion.remove(self)
             del self

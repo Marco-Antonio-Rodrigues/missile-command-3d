@@ -63,9 +63,10 @@ class Asteroids:
             indices.append(pt)
 
         glPushMatrix()
-        glEnable(GL_DEPTH_TEST)
         glEnable(GL_TEXTURE_2D)
         self.texture.bind()
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE)
+        glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, GL_MODULATE)
         glTranslatef(self.x, self.y, self.z)
         glScale(self.ray, self.ray, self.ray)
         glColor3fv((1, 1, 1))
@@ -109,6 +110,7 @@ class Asteroids:
             glEnd()
         glPopMatrix()
         glDisable(GL_CULL_FACE)
+        glDisable(GL_TEXTURE_2D)
         self.texture.unbind()
 
     def colide(
