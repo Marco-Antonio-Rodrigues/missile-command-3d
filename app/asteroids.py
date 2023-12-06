@@ -13,7 +13,9 @@ list_asteroids = []
 
 
 class Asteroids:
-    def __init__(self, stacks=8, sectors=8, x=0, y=0, z=0, ray=0.5):
+    def __init__(self, stacks=8, sectors=8, x=None, y=3.5, z=-5, ray=0.5):
+        if x is None:
+            x = random.randint(-9, 9)
         self.x = x
         self.y = y
         self.z = z
@@ -22,12 +24,9 @@ class Asteroids:
         self.n_stacks = stacks  # fatiamento vertical da esfera
         self.n_sectors = sectors  # fatiamento horizontal da esfera
         self.texture = Texture("images/moon.jpg")
-
-        self.xaux = random.randint(-9, 9)
-        self.yaux = 3.5
-        self.zaux = -10
-        self.ajusteX = mod(0.005 * self.xaux)  # Razão de ajuste no eixo X
-        self.ajusteY = mod(0.005 * self.yaux)  # Razão de ajuste no eixo Y
+        
+        self.ajusteX = mod(0.005 * self.x)  # Razão de ajuste no eixo X
+        self.ajusteY = mod(0.005 * self.y)  # Razão de ajuste no eixo Y
 
     def draw(self, pos_x=None, pos_y=None, pos_z=None):
         if pos_x:
@@ -67,8 +66,8 @@ class Asteroids:
         glEnable(GL_DEPTH_TEST)
         glEnable(GL_TEXTURE_2D)
         self.texture.bind()
-        glTranslatef(self.xaux, self.yaux, self.zaux)
-        glScale(self.ray / 2, self.ray / 2, self.ray / 2)
+        glTranslatef(self.x, self.y, self.z)
+        glScale(self.ray, self.ray, self.ray)
         glColor3fv((1, 1, 1))
         glEnable(GL_CULL_FACE)
         glFrontFace(GL_CCW)
@@ -117,25 +116,22 @@ class Asteroids:
     ):  # Checa se o asteroide colidiu e o remove
         if x and y and z and ray:
             distance = np.sqrt(
-                (self.xaux - x) ** 2 + (self.yaux - y) ** 2 + (self.zaux - z) ** 2
+                (self.x - x) ** 2 + (self.y - y) ** 2 + (self.z - z) ** 2
             )
-            if distance < self.ray or distance < ray:
-                Explosion(self.xaux, self.yaux, self.zaux)
+            if distance < (self.ray+ray):
+                Explosion(self.x, self.y, self.z,self.ray)
                 list_asteroids.remove(self)
                 del self
                 return True
         return False
 
     def update(self):
-        if self.yaux > -0.5 and self.xaux > 0:  # Se na direita
-            self.yaux -= self.ajusteY
-            self.draw()
-            return False
-        elif self.yaux > -0.5 and self.xaux < 0:  # Se Na esquerda
-            self.yaux -= self.ajusteY
+        if self.y > -0.5:
+            self.y -= self.ajusteY
             self.draw()
             return False
         else:  # Se colidiu com a terra
+            Explosion(self.x, self.y, self.z,self.ray)
             list_asteroids.remove(self)
             del self
             return True

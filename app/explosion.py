@@ -14,7 +14,7 @@ list_explosion = []
 
 class Explosion:
     def __init__(
-        self, x=0, y=0, z=0, ray=0.005, stacks=8, sectors=8
+        self, x=0, y=0, z=0, ray=0.5, stacks=8, sectors=8
     ):  # adicionar n stacks e sectors
         self.x = x
         self.y = y
@@ -112,8 +112,8 @@ class Explosion:
         self.texture.unbind()
 
     def update(self):  # Animação da explosão
-        if self.ray < 0.4:
-            self.ray += 0.002
+        if self.ray < 1:
+            self.ray += 0.005
             self.draw()
         else:
             list_explosion.remove(self)

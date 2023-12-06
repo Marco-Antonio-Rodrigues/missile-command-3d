@@ -43,6 +43,8 @@ class Camera:
         self.m_yaw = 0
         self.m_pitch = 0
         self.pos_mira = Vec3(0, 0, -1)
+        self.m_scl = 0.25
+        self.m_veloc = Vec3(0,0,0)
 
     def ativar(self):
         look = self.m_pos + self.m_dir
@@ -58,7 +60,22 @@ class Camera:
             self.m_up.y,
             self.m_up.z,
         )
-
+    def left(self):
+        self.m_veloc = self.m_left *  self.m_scl
+        self.m_pos =  self.m_pos +  self.m_veloc
+     
+    def right(self):
+        self.m_veloc = self.m_left *  (-self.m_scl)
+        self.m_pos =  self.m_pos +  self.m_veloc
+        
+    def down(self):
+        self.m_veloc = self.m_dir *  (-self.m_scl)
+        self.m_pos =  self.m_pos +  self.m_veloc
+        
+    def up(self):
+        self.m_veloc = self.m_dir *  self.m_scl
+        self.m_pos =  self.m_pos +  self.m_veloc
+        
     def updateYaw(self, dYaw):
         self.m_yaw += dYaw / 5
 

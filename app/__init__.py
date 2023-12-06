@@ -59,7 +59,7 @@ def draw():
     scenario()
     for asteroid in list_asteroids:  # Atualiza o Status dos Asteroides
         if asteroid.update():
-            pass
+            print("Chegou ao chão")
             # impact.play()  # toca o som do impacto do asteroide na terra
             # life -= 10
 
@@ -129,6 +129,15 @@ def main():
 
         pg.mouse.set_visible(not mouse_bloqueado)
         pg.event.set_grab(mouse_bloqueado)
+        keys = pg.key.get_pressed()
+        if keys[pg.K_a]:
+            camera.left()
+        elif keys[pg.K_d]:
+            camera.right()
+        elif keys[pg.K_w]:
+            camera.up()
+        elif keys[pg.K_s]:
+            camera.down()
         if mouse_bloqueado:
             mouse_x, mouse_y = pg.mouse.get_pos()
             mouse_callback(mouse_x, display[1] - mouse_y, camera)
