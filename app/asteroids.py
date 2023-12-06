@@ -13,7 +13,7 @@ list_asteroids = []
 
 
 class Asteroids:
-    def __init__(self, stacks=8, sectors=8, x=None, y=3.5, z=-5, ray=0.5):
+    def __init__(self, stacks=8, sectors=8, x=None, y=4.5, z=-5, ray=0.5):
         if x is None:
             x = random.randint(-9, 9)
         self.x = x
@@ -120,18 +120,19 @@ class Asteroids:
             )
             if distance < (self.ray+ray):
                 Explosion(self.x, self.y, self.z,self.ray)
-                list_asteroids.remove(self)
-                del self
+                if self in list_asteroids:
+                    list_asteroids.remove(self)
+                    del self
                 return True
         return False
 
     def update(self):
-        if self.y > -0.5:
+        if self.y > -1.15:
             self.y -= self.ajusteY
             self.draw()
             return False
         else:  # Se colidiu com a terra
-            Explosion(self.x, self.y, self.z,self.ray)
             list_asteroids.remove(self)
+            Explosion(self.x, self.y, self.z,self.ray)
             del self
             return True

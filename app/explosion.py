@@ -112,8 +112,8 @@ class Explosion:
         self.texture.unbind()
 
     def update(self):  # Animação da explosão
-        if self.ray < 1:
-            self.ray += 0.005
+        if self.ray < 1.5:
+            self.ray += 0.05
             self.draw()
         else:
             list_explosion.remove(self)

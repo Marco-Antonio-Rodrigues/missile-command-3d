@@ -59,7 +59,7 @@ def draw():
     scenario()
     for asteroid in list_asteroids:  # Atualiza o Status dos Asteroides
         if asteroid.update():
-            print("Chegou ao chão")
+            pass
             # impact.play()  # toca o som do impacto do asteroide na terra
             # life -= 10
 
@@ -71,7 +71,6 @@ def draw():
             if asteroid.colide(explosion.x, explosion.y, explosion.z, explosion.ray):
                 # expmis.play()  # toca o som da explosao acertando um asteroide
                 asteroids_killed += 1
-                print("Explodiu")
                 break
 
     for missile in list_missile:
