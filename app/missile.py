@@ -13,14 +13,14 @@ from math import degrees,sin
 
 
 class Missile:
-    def __init__(self, start, target, scale=0.12, rotation=0):
+    def __init__(self,missile_id,start, target, scale=0.12, rotation=0):
+        self.id = missile_id
         self.target = target
         self.start = start
         self.pos = start
         self.scale = scale
         self.rotation = rotation
         self.rotation_x = degrees(sin(target[1]))
-        self.vertices, self.faces = load_obj("assets/missile.obj")
         self.texture = Texture("images/texture.png")
         list_missile.append(self)
 
@@ -31,16 +31,7 @@ class Missile:
         glRotatef(self.rotation, 0, 0, 1)
         glRotatef(-90+self.rotation_x, 1, 0, 0)
         glScalef(self.scale, self.scale, self.scale)
-        for face in self.faces:
-            if len(face) == 4:
-                glBegin(GL_QUADS)
-            else:
-                glBegin(GL_POLYGON)
-            for vertex_index in face:
-                vertex = self.vertices[vertex_index - 1]
-                glTexCoord3f(vertex[0], vertex[1], vertex[2])
-                glVertex3fv(vertex)
-            glEnd()
+        glCallList(self.id)
         self.texture.unbind()
         glPopMatrix()
 
@@ -59,3 +50,18 @@ class Missile:
             for i in range(3):
                 self.pos[i] += (self.target[i] - self.start[i]) * 0.05
             self.draw()
+
+def carrega_missile(missile_id):
+    glNewList(missile_id,GL_COMPILE);
+    vertices, faces = load_obj("assets/missile.obj")
+    for face in faces:
+        if len(face) == 4:
+            glBegin(GL_QUADS)
+        else:
+            glBegin(GL_POLYGON)
+        for vertex_index in face:
+            vertex = vertices[vertex_index - 1]
+            glTexCoord3f(vertex[0], vertex[1], vertex[2])
+            glVertex3fv(vertex)
+        glEnd()
+    glEndList()

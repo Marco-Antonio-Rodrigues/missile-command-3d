@@ -13,7 +13,7 @@ from app.camera import Camera, mouse_callback
 from app.constants import HEIGHT, WIDTH
 from app.explosion import list_explosion
 from app.ground import Ground
-from app.missile import Missile, list_missile
+from app.missile import Missile, list_missile, carrega_missile
 from app.status_panel import draw_hp, draw_scoreboard
 from app.utils import (
     config_3d,
@@ -43,7 +43,8 @@ asteroids_killed = 0
 life = 100
 game_over_flag = False
 
-
+MISSILE_ID = glGenLists(1)
+carrega_missile(MISSILE_ID)
 
 
 def scenario():
@@ -129,7 +130,7 @@ def main():
                     escalar = float(abs(5/camera.pos_mira.z))
                     target = [camera.pos_mira.x*escalar, camera.pos_mira.y*escalar, camera.pos_mira.z*escalar]
                     # target = [camera.pos_mira.x, camera.pos_mira.y, camera.pos_mira.z]
-                    Missile(start, target)
+                    Missile(MISSILE_ID,start, target)
 
             if event.type == pg.VIDEORESIZE:
                 width, height = event.size
