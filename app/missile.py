@@ -24,7 +24,6 @@ class Missile:
 
     def draw(self):
         glPushMatrix()
-        glEnable(GL_DEPTH_TEST)
         self.texture.bind()
         glTranslatef(self.pos[0], self.pos[1], self.pos[2])
         glRotatef(self.rotation, 0, 0, 1)
@@ -41,7 +40,6 @@ class Missile:
                 glVertex3fv(vertex)
             glEnd()
         self.texture.unbind()
-        glDisable(GL_DEPTH_TEST)
         glPopMatrix()
 
     def update(self):

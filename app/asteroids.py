@@ -65,8 +65,6 @@ class Asteroids:
         glPushMatrix()
         glEnable(GL_TEXTURE_2D)
         self.texture.bind()
-        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE)
-        glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, GL_MODULATE)
         glTranslatef(self.x, self.y, self.z)
         glScale(self.ray, self.ray, self.ray)
         glColor3fv((1, 1, 1))
@@ -129,7 +127,7 @@ class Asteroids:
         return False
 
     def update(self):
-        if self.y > -1.15:
+        if self.y > -0.25:
             self.y -= self.ajusteY
             self.draw()
             return False
