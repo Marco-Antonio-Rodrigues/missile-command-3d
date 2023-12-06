@@ -7,6 +7,7 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 from pygame.locals import *
 
+from app.iluminacao import Iluminacao
 from app.asteroids import Asteroids, list_asteroids
 from app.camera import Camera, mouse_callback
 from app.constants import HEIGHT, WIDTH
@@ -43,10 +44,17 @@ life = 100
 game_over_flag = False
 
 
+
+
 def scenario():
     # Desenhando Base
     glPushMatrix()
+    if list_explosion != []:
+        glEnable(GL_LIGHT0)
+    else:
+        glDisable(GL_LIGHT0)
     ground.draw()
+    
     glPopMatrix()
     draw_hp(life,0,4,-20)
     draw_scoreboard(life,-10,4,-20)
@@ -60,19 +68,18 @@ def draw():
     scenario()
     for asteroid in list_asteroids:  # Atualiza o Status dos Asteroides
         if asteroid.update():
-            print("Chegou ao chão")
+            pass
             # impact.play()  # toca o som do impacto do asteroide na terra
             # life -= 10
 
     for explosion in list_explosion:
-        explosion.update()
-
+        explosion.update(0)
+        
     for asteroid in list_asteroids:  # Checa se uma explosão atingiu um asteroide
         for explosion in list_explosion:
             if asteroid.colide(explosion.x, explosion.y, explosion.z, explosion.ray):
                 # expmis.play()  # toca o som da explosao acertando um asteroide
                 asteroids_killed += 1
-                print("Explodiu")
                 break
 
     for missile in list_missile:
@@ -95,6 +102,8 @@ def main():
     asteroids_qtd = 3  # Quantidade de asteroides simultaneos no jogo
     dif = 0  # Variável auxiliar, para aumentar a dificuldade
     mouse_bloqueado = True
+    
+    Iluminacao()
     while True:
         if (
             asteroids_killed == dif + 100

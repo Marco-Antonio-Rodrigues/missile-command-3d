@@ -65,7 +65,6 @@ class Asteroids:
             indices.append(pt)
 
         glPushMatrix()
-        glEnable(GL_DEPTH_TEST)
         glEnable(GL_TEXTURE_2D)
         self.texture.bind()
         glTranslatef(self.x, self.y, self.z)
@@ -111,6 +110,7 @@ class Asteroids:
             glEnd()
         glPopMatrix()
         glDisable(GL_CULL_FACE)
+        glDisable(GL_TEXTURE_2D)
         self.texture.unbind()
 
     def colide(
@@ -122,18 +122,19 @@ class Asteroids:
             )
             if distance < self.ray*0.85:
                 Explosion(self.x, self.y, self.z,self.ray)
-                list_asteroids.remove(self)
-                del self
+                if self in list_asteroids:
+                    list_asteroids.remove(self)
+                    del self
                 return True
         return False
 
     def update(self):
-        if self.y > -0.5:
+        if self.y > -0.25:
             self.y -= self.ajusteY
             self.draw()
             return False
         else:  # Se colidiu com a terra
-            Explosion(self.x, self.y, self.z,self.ray)
             list_asteroids.remove(self)
+            Explosion(self.x, self.y, self.z,self.ray)
             del self
             return True
