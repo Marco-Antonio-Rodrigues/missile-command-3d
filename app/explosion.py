@@ -25,7 +25,7 @@ class Explosion:
         self.n_sectors = sectors  # fatiamento horizontal da esfera sugerido 30
         self.texture = Texture("images/sun.jpg", True)
 
-    def draw(self, light, pos_x=None, pos_y=None, pos_z=None):
+    def draw(self, pos_x=None, pos_y=None, pos_z=None):
         if pos_x:
             self.x = pos_x
         if pos_y:
@@ -79,14 +79,14 @@ class Explosion:
                 u = j / self.n_sectors
                 v = i / self.n_stacks
                 glTexCoord2f(u, v)
-                glVertex3f(pos_x + x, pos_y + y, pos_z + z)
+                glVertex3f(x, y, z)
 
                 index = indices[i + 1][j]
                 x, y, z = pontos[index]
                 u = j / self.n_sectors
                 v = (i + 1) / self.n_stacks
                 glTexCoord2f(u, v)
-                glVertex3f(pos_x + x, pos_y + y, pos_z + z)
+                glVertex3f(x, y, z)
 
                 if j == self.n_sectors - 1:
                     index = indices[i][0]
@@ -94,25 +94,24 @@ class Explosion:
                     u = 0
                     v = i / self.n_stacks
                     glTexCoord2f(u, v)
-                    glVertex3f(pos_x + x, pos_y + y, pos_z + z)
+                    glVertex3f(x, y, z)
 
                     index = indices[i + 1][0]
                     x, y, z = pontos[index]
                     u = 0
                     v = (i + 1) / self.n_stacks
                     glTexCoord2f(u, v)
-                    glVertex3f(pos_x + x, pos_y + y, pos_z + z)
+                    glVertex3f(x, y, z)
 
             glEnd()
         glPopMatrix()
         glDisable(GL_CULL_FACE)
         self.texture.unbind()
 
-    def update(self, light):  # Animação da explosão
+    def update(self):  # Animação da explosão
         if self.ray < 1.5:
-            if light == 0:
-                self.ray += 0.05
-                self.draw(light)
+            self.ray += 0.05
+            self.draw()
         else:
             list_explosion.remove(self)
             del self

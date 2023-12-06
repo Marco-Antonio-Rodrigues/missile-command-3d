@@ -27,7 +27,6 @@ class Asteroids:
         self.n_sectors = sectors  # fatiamento horizontal da esfera
         self.texture = Texture("images/moon.jpg")
         
-        self.ajusteX = mod(0.005 * self.x)  # Razão de ajuste no eixo X
         self.ajusteY = mod(0.002 * self.y)  # Razão de ajuste no eixo Y
 
     def draw(self, pos_x=None, pos_y=None, pos_z=None):
@@ -83,14 +82,14 @@ class Asteroids:
                 u = j / self.n_sectors
                 v = i / self.n_stacks
                 glTexCoord2f(u, v)
-                glVertex3f(pos_x + x, pos_y + y, pos_z + z)
+                glVertex3f(x, y, z)
 
                 index = indices[i + 1][j]
                 x, y, z = pontos[index]
                 u = j / self.n_sectors
                 v = (i + 1) / self.n_stacks
                 glTexCoord2f(u, v)
-                glVertex3f(pos_x + x, pos_y + y, pos_z + z)
+                glVertex3f(x, y, z)
 
                 if j == self.n_sectors - 1:
                     index = indices[i][0]
@@ -98,14 +97,14 @@ class Asteroids:
                     u = 0
                     v = i / self.n_stacks
                     glTexCoord2f(u, v)
-                    glVertex3f(pos_x + x, pos_y + y, pos_z + z)
+                    glVertex3f(x, y, z)
 
                     index = indices[i + 1][0]
                     x, y, z = pontos[index]
                     u = 0
                     v = (i + 1) / self.n_stacks
                     glTexCoord2f(u, v)
-                    glVertex3f(pos_x + x, pos_y + y, pos_z + z)
+                    glVertex3f(x, y, z)
 
             glEnd()
         glPopMatrix()

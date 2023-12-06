@@ -73,7 +73,7 @@ def draw():
             # life -= 10
 
     for explosion in list_explosion:
-        explosion.update(0)
+        explosion.update()
         
     for asteroid in list_asteroids:  # Checa se uma explosão atingiu um asteroide
         for explosion in list_explosion:
