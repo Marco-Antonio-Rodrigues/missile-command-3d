@@ -21,8 +21,7 @@ class Missile:
         self.vertices, self.faces = load_obj("assets/missile.obj")
         self.texture = Texture("images/texture.png")
         list_missile.append(self)
-        
-    '''
+
     def draw(self):
         glPushMatrix()
         glEnable(GL_DEPTH_TEST)
@@ -44,33 +43,19 @@ class Missile:
         self.texture.unbind()
         glDisable(GL_DEPTH_TEST)
         glPopMatrix()
-'''
-   
-    def draw(self):
-        glPushMatrix()
-        glEnable(GL_DEPTH_TEST)
-        glTranslatef(self.pos[0], self.pos[1], self.pos[2])
-        glPointSize(10.0)
-        glBegin(GL_POINTS)
-        glVertex3f(0,0,0)
-        glEnd()
-        glDisable(GL_DEPTH_TEST)
-        glPopMatrix()
-    
+
     def update(self):
         # Verifica se o missile chegou ao alvo com uma margem de erro
         margin_of_error = 0.005
         distance_to_target = (
             sum((self.pos[i] - self.target[i]) ** 2 for i in range(3)) ** 0.5
         )
-        #print(distance_to_target, end= '  ')
-
         if distance_to_target < margin_of_error:
+            Explosion(self.pos[0], self.pos[1], self.pos[2])
             list_missile.remove(self)
             del self
         else:
             self.rotation += 1
             for i in range(3):
                 self.pos[i] += (self.target[i] - self.start[i]) * 0.05
-            #print(self.pos)
             self.draw()

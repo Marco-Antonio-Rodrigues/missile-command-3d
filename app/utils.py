@@ -97,4 +97,4 @@ def force_mouse_center():
 
 
 def mod(x):
-    return sqrt(x*x)
+    return sqrt(x * x)

@@ -39,7 +39,7 @@ camera = Camera()
 ground = Ground()
 
 asteroids_killed = 0
-life = 100
+# life = 100
 game_over_flag = False
 
 
@@ -59,57 +59,51 @@ def draw():
     scenario()
     for asteroid in list_asteroids:  # Atualiza o Status dos Asteroides
         if asteroid.update():
-            impact.play()  # toca o som do impacto do asteroide na terra
-            life -= 10
-            print(life)
+            pass
+            # impact.play()  # toca o som do impacto do asteroide na terra
+            # life -= 10
 
     for explosion in list_explosion:
-       explosion.update()
-       
-    
+        explosion.update()
+
     for asteroid in list_asteroids:  # Checa se uma explosão atingiu um asteroide
         for explosion in list_explosion:
             if asteroid.colide(explosion.x, explosion.y, explosion.z, explosion.ray):
-                expmis.play()  # toca o som da explosao acertando um asteroide
+                # expmis.play()  # toca o som da explosao acertando um asteroide
                 asteroids_killed += 1
-                #print("Explodiu")
-                break 
-        for missile in list_missile:
-            if asteroid.colide(missile.pos[0], missile.pos[1], missile.pos[2], 0.1):
-                expmis.play()  # toca o som da explosao acertando um asteroide
-                asteroids_killed += 1
-                #print("Explodiu")
+                print("Explodiu")
                 break
 
     for missile in list_missile:
         missile.update()
 
 
-music_thread = threading.Thread(
-     target=toca_musica, args=(game_over_flag,)
- )                                                  # cria um thread exclusivo para tocar a musica sem afetar o jogo
+# music_thread = threading.Thread(
+#      target=toca_musica, args=(game_over_flag,)
+#  )                                                  # cria um thread exclusivo para tocar a musica sem afetar o jogo
 
 
 def main():
-    
     global list_asteroids
     global list_missile
     global game_over_flag
     global asteroids_killed
     global life
-    music_thread.start()
-    
-    asteroids_qtd = 3                           #Quantidade de asteroides simultaneos no jogo
-    dif = 0                                     #Variável auxiliar, para aumentar a dificuldade
+    # music_thread.start()
+
+    asteroids_qtd = 3  # Quantidade de asteroides simultaneos no jogo
+    dif = 0  # Variável auxiliar, para aumentar a dificuldade
     mouse_bloqueado = True
     while True:
-        if (asteroids_killed == dif + 100):     # A cada 100 asteroides destruidos o jogo aumenta sua dificuldade
+        if (
+            asteroids_killed == dif + 100
+        ):  # A cada 100 asteroides destruidos o jogo aumenta sua dificuldade
             dif = dif + 100
-            asteroids_qtd = asteroids_qtd + 1 
+            asteroids_qtd = asteroids_qtd + 1
 
-        if len(list_asteroids) < asteroids_qtd: #Cria os Asteroides
+        if len(list_asteroids) < asteroids_qtd:  # Cria os Asteroides
             Asteroids()
-            
+
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 pg.quit()
@@ -119,7 +113,7 @@ def main():
                 x_tela, y_tela = event.pos
                 target = tela_for_mundo_3d(x_tela, y_tela)
                 if True:
-                    expmis.play()  # toca o som da explosao
+                    # expmis.play()  # toca o som da explosao
                     start = list(glGetDoublev(GL_MODELVIEW_MATRIX))
                     start = [start[3][0], start[3][1], start[3][2]]
                     target = [camera.pos_mira.x, camera.pos_mira.y, camera.pos_mira.z]
@@ -128,11 +122,10 @@ def main():
             if event.type == pg.VIDEORESIZE:
                 width, height = event.size
                 resize_viewport(width, height)
-            
+
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     mouse_bloqueado = not mouse_bloqueado
-                    
 
         pg.mouse.set_visible(not mouse_bloqueado)
         pg.event.set_grab(mouse_bloqueado)

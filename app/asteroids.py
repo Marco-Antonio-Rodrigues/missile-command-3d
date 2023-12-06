@@ -5,30 +5,29 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 from pygame.locals import *
 
-from app.utils import mod as mod
 from app.explosion import Explosion
 from app.texture import Texture
+from app.utils import mod
 
 list_asteroids = []
 
 
 class Asteroids:
-    def __init__(self, stacks=8, sectors=8, x=0, y=0, z=0, ray=0.5): 
+    def __init__(self, stacks=8, sectors=8, x=0, y=0, z=0, ray=0.5):
         self.x = x
         self.y = y
         self.z = z
         self.ray = ray
         list_asteroids.append(self)
-        self.n_stacks = stacks              # fatiamento vertical da esfera 
-        self.n_sectors = sectors            # fatiamento horizontal da esfera
+        self.n_stacks = stacks  # fatiamento vertical da esfera
+        self.n_sectors = sectors  # fatiamento horizontal da esfera
         self.texture = Texture("images/moon.jpg")
 
-        self.xaux = random.randint(-9,9)
+        self.xaux = random.randint(-9, 9)
         self.yaux = 3.5
         self.zaux = -10
-        self.ajusteX = mod(0.005*self.xaux) #Razão de ajuste no eixo X
-        self.ajusteY = mod(0.005*self.yaux)   #Razão de ajuste no eixo Y
-        
+        self.ajusteX = mod(0.005 * self.xaux)  # Razão de ajuste no eixo X
+        self.ajusteY = mod(0.005 * self.yaux)  # Razão de ajuste no eixo Y
 
     def draw(self, pos_x=None, pos_y=None, pos_z=None):
         if pos_x:
@@ -113,10 +112,13 @@ class Asteroids:
         glDisable(GL_CULL_FACE)
         self.texture.unbind()
 
-    def colide(self, x=None, y=None, z=None, ray=None):  # Checa se o asteroide colidiu e o remove
+    def colide(
+        self, x=None, y=None, z=None, ray=None
+    ):  # Checa se o asteroide colidiu e o remove
         if x and y and z and ray:
-            distance = np.sqrt((self.xaux - x) ** 2 + (self.yaux - y) ** 2 +(self.zaux - z) ** 2)
-            #print(distance)
+            distance = np.sqrt(
+                (self.xaux - x) ** 2 + (self.yaux - y) ** 2 + (self.zaux - z) ** 2
+            )
             if distance < self.ray or distance < ray:
                 Explosion(self.xaux, self.yaux, self.zaux)
                 list_asteroids.remove(self)
@@ -125,19 +127,15 @@ class Asteroids:
         return False
 
     def update(self):
-        if self.yaux > -0.5 and self.xaux >0:     #Se na direita
-            self.xaux -= self.ajusteX
+        if self.yaux > -0.5 and self.xaux > 0:  # Se na direita
             self.yaux -= self.ajusteY
-            self.zaux +=0.05
             self.draw()
             return False
         elif self.yaux > -0.5 and self.xaux < 0:  # Se Na esquerda
-            self.xaux += self.ajusteX
             self.yaux -= self.ajusteY
-            self.zaux +=0.05
             self.draw()
             return False
-        else:                                   # Se colidiu com a terra
+        else:  # Se colidiu com a terra
             list_asteroids.remove(self)
             del self
             return True
