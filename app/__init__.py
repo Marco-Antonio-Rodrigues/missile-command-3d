@@ -167,6 +167,7 @@ def main():
 
         pg.mouse.set_visible(not mouse_bloqueado)
         pg.event.set_grab(mouse_bloqueado)
+        '''
         keys = pg.key.get_pressed()
         if keys[pg.K_a]:
             camera.left()
@@ -176,6 +177,7 @@ def main():
             camera.up()
         elif keys[pg.K_s]:
             camera.down()
+        ''' 
         if mouse_bloqueado:
             mouse_x, mouse_y = pg.mouse.get_pos()
             mouse_callback(mouse_x, display[1] - mouse_y, camera)
