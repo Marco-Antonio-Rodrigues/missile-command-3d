@@ -36,61 +36,62 @@ class Vec3:
 
 class Camera:
     def __init__(self, pos=Vec3(0, 0, 0)):
-        self.m_pos = pos
-        self.m_dir = Vec3(0, 0, -1)
-        self.m_left = Vec3(-1, 0, 0)
-        self.m_up = Vec3(0, 1, 0)
-        self.m_yaw = 0
-        self.m_pitch = 0
+        self.pos = pos
+        self.dir = Vec3(0, 0, -1)
+        self.left = Vec3(-1, 0, 0)
+        self.up = Vec3(0, 1, 0)
+        self.yaw = 0
+        self.pitch = 0
         self.pos_mira = Vec3(0, 0, -1)
-        self.m_scl = 0.25
-        self.m_veloc = Vec3(0,0,0)
+        self.scl = 0.25
+        self.veloc = Vec3(0, 0, 0)
 
     def ativar(self):
-        look = self.m_pos + self.m_dir
+        look = self.pos + self.dir
         glLoadIdentity()
         gluLookAt(
-            self.m_pos.x,
-            self.m_pos.y,
-            self.m_pos.z,
+            self.pos.x,
+            self.pos.y,
+            self.pos.z,
             look.x,
             look.y,
             look.z,
-            self.m_up.x,
-            self.m_up.y,
-            self.m_up.z,
+            self.up.x,
+            self.up.y,
+            self.up.z,
         )
+
     def left(self):
-        self.m_veloc = self.m_left *  self.m_scl
-        self.m_pos =  self.m_pos +  self.m_veloc
-     
+        self.veloc = self.left * self.scl
+        self.pos = self.pos + self.veloc
+
     def right(self):
-        self.m_veloc = self.m_left *  (-self.m_scl)
-        self.m_pos =  self.m_pos +  self.m_veloc
-        
+        self.veloc = self.left * (-self.scl)
+        self.pos = self.pos + self.veloc
+
     def down(self):
-        self.m_veloc = self.m_dir *  (-self.m_scl)
-        self.m_pos =  self.m_pos +  self.m_veloc
-        
+        self.veloc = self.dir * (-self.scl)
+        self.pos = self.pos + self.veloc
+
     def up(self):
-        self.m_veloc = self.m_dir *  self.m_scl
-        self.m_pos =  self.m_pos +  self.m_veloc
-        
+        self.veloc = self.dir * self.scl
+        self.pos = self.pos + self.veloc
+
     def updateYaw(self, dYaw):
-        self.m_yaw += dYaw / 5
+        self.yaw += dYaw / 5
 
     def updatePitch(self, dPitch):
-        self.m_pitch += dPitch / 5
+        self.pitch += dPitch / 5
 
     def update(self):
-        ang_x = float(numpy.radians(self.m_yaw))
-        ang_y = float(numpy.radians(self.m_pitch))
-        self.m_dir.x = numpy.sin(ang_x)
-        self.m_dir.z = (-1) * (numpy.cos(ang_x))
-        self.m_dir.y = numpy.tan(ang_y)
-        self.m_dir.normaliza()
-        self.m_left = self.m_up.prodVetorial(self.m_dir)
-        self.pos_mira = self.m_pos + self.m_dir
+        ang_x = float(numpy.radians(self.yaw))
+        ang_y = float(numpy.radians(self.pitch))
+        self.dir.x = numpy.sin(ang_x)
+        self.dir.z = (-1) * (numpy.cos(ang_x))
+        self.dir.y = numpy.tan(ang_y)
+        self.dir.normaliza()
+        self.left = self.up.prodVetorial(self.dir)
+        self.pos_mira = self.pos + self.dir
         self.draw_mira()
         self.ativar()
 

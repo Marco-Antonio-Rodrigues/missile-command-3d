@@ -15,9 +15,9 @@ list_asteroids = []
 class Asteroids:
     def __init__(self, stacks=8, sectors=8, x=None, y=None, z=-5, ray=0.5):
         if x is None:
-            x = random.randint(-9, 9)
+            x = random.randint(-8, 8)
         if y is None:
-            y = random.randint(4, 6)
+            y = random.randint(4, 7)
         self.x = x
         self.y = y
         self.z = z
@@ -26,7 +26,7 @@ class Asteroids:
         self.n_stacks = stacks  # fatiamento vertical da esfera
         self.n_sectors = sectors  # fatiamento horizontal da esfera
         self.texture = Texture("images/moon.jpg")
-        
+
         self.ajusteY = mod(0.002 * self.y)  # Razão de ajuste no eixo Y
 
     def draw(self, pos_x=None, pos_y=None, pos_z=None):
@@ -112,15 +112,13 @@ class Asteroids:
         glDisable(GL_TEXTURE_2D)
         self.texture.unbind()
 
-    def colide(
-        self, x=None, y=None, z=None, ray=None
-    ):  # Checa se o asteroide colidiu e o remove
-        if x and y and z and ray:
+    def colide(self, x=None, y=None, z=None):  # Checa se o asteroide colidiu e o remove
+        if x and y and z:
             distance = np.sqrt(
                 (self.x - x) ** 2 + (self.y - y) ** 2 + (self.z - z) ** 2
             )
-            if distance < self.ray*0.85:
-                Explosion(self.x, self.y, self.z,self.ray)
+            if distance < self.ray * 0.85:
+                Explosion(self.x, self.y, self.z, self.ray)
                 if self in list_asteroids:
                     list_asteroids.remove(self)
                     del self
@@ -134,6 +132,6 @@ class Asteroids:
             return False
         else:  # Se colidiu com a terra
             list_asteroids.remove(self)
-            Explosion(self.x, self.y, self.z,self.ray)
+            Explosion(self.x, self.y, self.z, self.ray)
             del self
             return True

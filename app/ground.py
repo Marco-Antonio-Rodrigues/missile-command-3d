@@ -7,7 +7,7 @@ from app.texture import Texture
 
 
 class Ground:
-    def __init__(self,y=-1,L=500):
+    def __init__(self, y=-1, L=500):
         self.y = y
         self.L = L
         self.texture = Texture("images/piso.jpg")

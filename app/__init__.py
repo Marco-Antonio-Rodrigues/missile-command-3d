@@ -7,15 +7,16 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 from pygame.locals import *
 
-from app.score import Score
-from app.iluminacao import Iluminacao
 from app.asteroids import Asteroids, list_asteroids
 from app.camera import Camera, mouse_callback
 from app.constants import HEIGHT, WIDTH
 from app.explosion import list_explosion
 from app.ground import Ground
-from app.missile import Missile, list_missile, carrega_missile
-from app.status_panel import draw_hp, draw_scoreboard
+from app.iluminacao import Iluminacao
+from app.missile import Missile, carrega_missile, list_missile
+from app.score import Score
+from app.status_panel import draw_hp, draw_scoreboard, mini_map
+from app.texture import Texture
 from app.utils import (
     config_3d,
     force_mouse_center,
@@ -41,6 +42,8 @@ camera = Camera()
 ground = Ground()
 score = Score()
 
+texture_game_over = Texture("images/game_over.png")
+
 asteroids_killed = 0
 life = 100
 game_over_flag = False
@@ -48,21 +51,22 @@ game_over_flag = False
 MISSILE_ID = glGenLists(1)
 carrega_missile(MISSILE_ID)
 
+
 def scenario():
     # Desenhando Base
-    
     glPushMatrix()
     if list_explosion != []:
         glEnable(GL_LIGHT0)
     else:
         glDisable(GL_LIGHT0)
     ground.draw()
-    
+
     glPopMatrix()
     score.draw()
-    draw_hp(life,2.4,1.8,-20)
-    draw_scoreboard(asteroids_killed, -7,1.8,-20)
-    
+    draw_scoreboard(asteroids_killed, -7, 1.8, -20)
+    draw_hp(life, 2.4, 1.8, -20)
+    mini_map(list_asteroids, -3.8, 3, -20)
+
 
 def draw():
     global asteroids_killed, life
@@ -74,16 +78,23 @@ def draw():
     for asteroid in list_asteroids:  # Atualiza o Status dos Asteroides
         if asteroid.update():
             pass
-            # impact.play()  # toca o som do impacto do asteroide na terra
+            impact.play()  # toca o som do impacto do asteroide na terra
             life -= 10
 
     for explosion in list_explosion:
         explosion.update()
-        
+
     for asteroid in list_asteroids:  # Checa se uma explosão atingiu um asteroide
         for explosion in list_explosion:
-            if asteroid.colide(explosion.x, explosion.y, explosion.z, explosion.ray):
-                # expmis.play()  # toca o som da explosao acertando um asteroide
+            if asteroid.colide(explosion.x, explosion.y, explosion.z):
+                expmis.play()  # toca o som da explosao acertando um asteroide
+                asteroids_killed += 1
+                break
+
+    for asteroid in list_asteroids:  # Checa se uma explosão atingiu um asteroide
+        for missile in list_missile:
+            if asteroid.colide(missile.pos[0], missile.pos[1], missile.pos[2]):
+                expmis.play()  # toca o som da explosao acertando um asteroide
                 asteroids_killed += 1
                 break
 
@@ -91,9 +102,9 @@ def draw():
         missile.update()
 
 
-# music_thread = threading.Thread(
-#      target=toca_musica, args=(game_over_flag,)
-#  )                                                  # cria um thread exclusivo para tocar a musica sem afetar o jogo
+music_thread = threading.Thread(
+    target=toca_musica, args=(game_over_flag,)
+)  # cria um thread exclusivo para tocar a musica sem afetar o jogo
 
 
 def main():
@@ -102,7 +113,7 @@ def main():
     global game_over_flag
     global asteroids_killed
     global life
-    # music_thread.start()
+    music_thread.start()
 
     asteroids_qtd = 3  # Quantidade de asteroides simultaneos no jogo
     dif = 0  # Variável auxiliar, para aumentar a dificuldade
@@ -128,13 +139,16 @@ def main():
                 x_tela, y_tela = event.pos
                 target = tela_for_mundo_3d(x_tela, y_tela)
                 if True:
-                    # expmis.play()  # toca o som da explosao
+                    expmis.play()  # toca o som da explosao
                     start = list(glGetDoublev(GL_MODELVIEW_MATRIX))
                     start = [start[3][0], start[3][1], start[3][2]]
-                    escalar = float(abs(5/camera.pos_mira.z))
-                    target = [camera.pos_mira.x*escalar, camera.pos_mira.y*escalar, camera.pos_mira.z*escalar]
-                    # target = [camera.pos_mira.x, camera.pos_mira.y, camera.pos_mira.z]
-                    Missile(MISSILE_ID,start, target)
+                    escalar = float(abs(5 / camera.pos_mira.z))
+                    target = [
+                        camera.pos_mira.x * escalar,
+                        camera.pos_mira.y * escalar,
+                        camera.pos_mira.z * escalar,
+                    ]
+                    Missile(MISSILE_ID, start, target)
 
             if event.type == pg.VIDEORESIZE:
                 width, height = event.size
@@ -160,11 +174,11 @@ def main():
             mouse_callback(mouse_x, display[1] - mouse_y, camera)
 
         draw()
-        if life == 0:
+        if life <= 0:
             game_over_flag = True
-            #game_over(WIDTH_WORLD, HEIGHT_WORLD, texture_game_over)
-            # pg.mixer.music.load("audio/mgameover.mp3")
-            # pg.mixer.music.play()
+            game_over(display[0], display[1], texture_game_over)
+            pg.mixer.music.load("audio/mgameover.mp3")
+            pg.mixer.music.play()
             sleep(2)
             quit()
         CLOCK.tick(60)

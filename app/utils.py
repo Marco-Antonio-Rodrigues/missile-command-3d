@@ -8,11 +8,12 @@ from app.constants import ASPECT, HEIGHT, WIDTH
 
 
 def game_over(width, height, texture):
-    glEnable(GL_TEXTURE_2D)
     # Desenhando game over
     glPushMatrix()
-    glScalef(width / 4, height / 4, 1)
-    glBindTexture(GL_TEXTURE_2D, texture)
+    glTranslatef(-2, 10, -25)
+    glScalef(width / 100, height / 100, 1)
+    texture.bind()
+    glColor3f(1, 1, 1)
     glBegin(GL_QUADS)
 
     glTexCoord2f(0, 0), glVertex3f(-1, -1, 0)
@@ -21,7 +22,7 @@ def game_over(width, height, texture):
     glTexCoord2f(0, 1), glVertex3f(-1, 1, 0)
 
     glEnd()
-    glDisable(GL_TEXTURE_2D)
+    texture.unbind()
     glPopMatrix()
     glFlush()
     pg.display.flip()

@@ -3,17 +3,18 @@ from OpenGL.GLU import *
 
 list_missile = []
 
+from math import degrees, sin
+
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
 from app.explosion import Explosion
 from app.texture import Texture
 from app.utils import load_obj
-from math import degrees,sin
 
 
 class Missile:
-    def __init__(self,missile_id,start, target, scale=0.12, rotation=0):
+    def __init__(self, missile_id, start, target, scale=0.12, rotation=0):
         self.id = missile_id
         self.target = target
         self.start = start
@@ -29,7 +30,7 @@ class Missile:
         self.texture.bind()
         glTranslatef(self.pos[0], self.pos[1], self.pos[2])
         glRotatef(self.rotation, 0, 0, 1)
-        glRotatef(-90+self.rotation_x, 1, 0, 0)
+        glRotatef(-90 + self.rotation_x, 1, 0, 0)
         glScalef(self.scale, self.scale, self.scale)
         glCallList(self.id)
         self.texture.unbind()
@@ -51,8 +52,9 @@ class Missile:
                 self.pos[i] += (self.target[i] - self.start[i]) * 0.05
             self.draw()
 
+
 def carrega_missile(missile_id):
-    glNewList(missile_id,GL_COMPILE);
+    glNewList(missile_id, GL_COMPILE)
     vertices, faces = load_obj("assets/missile.obj")
     for face in faces:
         if len(face) == 4:

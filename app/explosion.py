@@ -59,7 +59,6 @@ class Explosion:
                 pt.append(index)
             indices.append(pt)
 
-        
         glPushMatrix()
         self.texture.bind()
         glTranslatef(pos_x, pos_y, pos_z)
@@ -68,7 +67,6 @@ class Explosion:
         glEnable(GL_CULL_FACE)
         glFrontFace(GL_CCW)
         glCullFace(GL_BACK)
-
 
         for i in range(int(self.n_stacks)):
             glBegin(GL_TRIANGLE_STRIP)
