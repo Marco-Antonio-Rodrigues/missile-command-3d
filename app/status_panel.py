@@ -97,11 +97,10 @@ pixel_digits = {
     ],
 }
 
-
 # Função para desenhar números na tela
 def draw_digitos(digitos):
     size = 0.20  # size
-    glPointSize(30 * size)
+    glPointSize(50* size)
     glBegin(GL_POINTS)
     for posicion, digito in enumerate(str(digitos)):
         for linha, pixel_linha in enumerate(pixel_digits[digito]):
@@ -113,8 +112,8 @@ def draw_digitos(digitos):
 
 # Função para desenhar os pontos
 def draw_scoreboard(digitos, x, y,z):
-    glColor3f(1, 1, 1)
     glPushMatrix()
+    glColor3f(1, 1, 1)
     glTranslatef(x, y, z)
     draw_digitos(digitos)
     glPopMatrix()
@@ -122,10 +121,11 @@ def draw_scoreboard(digitos, x, y,z):
 
 # Função para desenhar o HP
 def draw_hp(digitos, x, y,z):
-    glColor3f(1, 1, 1)
+    
     glPushMatrix()
+    glColor3f(1, 1, 1)
     glTranslatef(x - 2.5, y, z)
-    draw_digitos("HP:")
+
     glPopMatrix()
 
     glPushMatrix()

@@ -7,6 +7,7 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 from pygame.locals import *
 
+from app.score import Score
 from app.iluminacao import Iluminacao
 from app.asteroids import Asteroids, list_asteroids
 from app.camera import Camera, mouse_callback
@@ -38,6 +39,7 @@ impact = pg.mixer.Sound("audio/boom15.wav")
 
 camera = Camera()
 ground = Ground()
+score = Score()
 
 asteroids_killed = 0
 life = 100
@@ -46,9 +48,9 @@ game_over_flag = False
 MISSILE_ID = glGenLists(1)
 carrega_missile(MISSILE_ID)
 
-
 def scenario():
     # Desenhando Base
+    
     glPushMatrix()
     if list_explosion != []:
         glEnable(GL_LIGHT0)
@@ -57,8 +59,10 @@ def scenario():
     ground.draw()
     
     glPopMatrix()
-    draw_hp(life,0,4,-20)
-    draw_scoreboard(life,-10,4,-20)
+    score.draw()
+    draw_hp(life,2.4,1.8,-20)
+    draw_scoreboard(asteroids_killed, -7,1.8,-20)
+    
 
 def draw():
     global asteroids_killed, life
@@ -71,7 +75,7 @@ def draw():
         if asteroid.update():
             pass
             # impact.play()  # toca o som do impacto do asteroide na terra
-            # life -= 10
+            life -= 10
 
     for explosion in list_explosion:
         explosion.update()
@@ -103,7 +107,7 @@ def main():
     asteroids_qtd = 3  # Quantidade de asteroides simultaneos no jogo
     dif = 0  # Variável auxiliar, para aumentar a dificuldade
     mouse_bloqueado = True
-    
+
     Iluminacao()
     while True:
         if (
@@ -156,11 +160,11 @@ def main():
             mouse_callback(mouse_x, display[1] - mouse_y, camera)
 
         draw()
-        # if life == 0:
-        # game_over_flag = True
-        # game_over(WIDTH_WORLD, HEIGHT_WORLD, texture_game_over)
-        # pg.mixer.music.load("audio/mgameover.mp3")
-        # pg.mixer.music.play()
-        # sleep(2)
-        # quit()
+        if life == 0:
+            game_over_flag = True
+            #game_over(WIDTH_WORLD, HEIGHT_WORLD, texture_game_over)
+            # pg.mixer.music.load("audio/mgameover.mp3")
+            # pg.mixer.music.play()
+            sleep(2)
+            quit()
         CLOCK.tick(60)
