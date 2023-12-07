@@ -3,6 +3,7 @@ import pygame as pg
 from numpy import sqrt as sqrt
 from OpenGL.GL import *
 from OpenGL.GLU import *
+from time import sleep
 
 from app.constants import ASPECT, HEIGHT, WIDTH
 
@@ -10,8 +11,8 @@ from app.constants import ASPECT, HEIGHT, WIDTH
 def game_over(width, height, texture):
     # Desenhando game over
     glPushMatrix()
-    glTranslatef(-2, 10, -25)
-    glScalef(width / 100, height / 100, 1)
+    glTranslatef(-2, 6, -19)
+    glScalef(width / 100, height / 110, 1)
     texture.bind()
     glColor3f(1, 1, 1)
     glBegin(GL_QUADS)
@@ -52,13 +53,10 @@ def load_obj(filename):
 
 def toca_musica(game_over_flag):
     # carrega a musica
+    
     pg.mixer.music.load("audio/mcomeco.mp3")
     pg.mixer.music.play()
-    while pg.mixer.music.get_busy():
-        # verifica se deu gameover antes da musica acabar
-        if game_over_flag == True:
-            pg.mixer.music.stop()
-
+    sleep(1.47)
     # carrega o loop da musica
     pg.mixer.music.load("audio/mloop.mp3")
     pg.mixer.music.play(-1)

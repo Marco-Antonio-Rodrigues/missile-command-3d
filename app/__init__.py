@@ -1,4 +1,4 @@
-import threading
+from threading import Thread
 from random import randint
 from time import sleep
 
@@ -60,11 +60,15 @@ def scenario():
     else:
         glDisable(GL_LIGHT0)
     ground.draw()
-
     glPopMatrix()
+    
+    glEnable(GL_LIGHT0)
     score.draw()
+    glDisable(GL_LIGHT0)
     draw_scoreboard(asteroids_killed, -7, 1.8, -20)
+    glEnable(GL_LIGHT1)
     draw_hp(life, 2.4, 1.8, -20)
+    glDisable(GL_LIGHT1)
     mini_map(list_asteroids, -3.8, 3, -20)
 
 
@@ -102,8 +106,9 @@ def draw():
         missile.update()
 
 
-music_thread = threading.Thread(
-    target=toca_musica, args=(game_over_flag,)
+
+music_thread = Thread(
+    target=toca_musica, args=[game_over_flag]
 )  # cria um thread exclusivo para tocar a musica sem afetar o jogo
 
 
@@ -176,9 +181,11 @@ def main():
         draw()
         if life <= 0:
             game_over_flag = True
+            glEnable(GL_LIGHT0)
             game_over(display[0], display[1], texture_game_over)
+            glDisable(GL_LIGHT0)
             pg.mixer.music.load("audio/mgameover.mp3")
             pg.mixer.music.play()
-            sleep(2)
-            quit()
+            sleep(4)
+            quit() 
         CLOCK.tick(60)

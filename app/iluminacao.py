@@ -19,6 +19,10 @@ class Iluminacao:
         glLightfv(GL_LIGHT0, GL_AMBIENT, (0.2, 0.2, 0.2, 1.0))
         glLightfv(GL_LIGHT0, GL_DIFFUSE, luz_difusa)
         glLightfv(GL_LIGHT0, GL_SPECULAR, luz_especular)
+        
+        glLightfv(GL_LIGHT1, GL_AMBIENT, (0.2, 0.2, 0.2, 1.0))
+        glLightfv(GL_LIGHT1, GL_DIFFUSE, luz_difusa)
+        glLightfv(GL_LIGHT1, GL_SPECULAR, (1.0, 0, 0, 1.0))
 
         glEnable(GL_COLOR_MATERIAL)
         glEnable(GL_LIGHTING)  # Habilitando luz
