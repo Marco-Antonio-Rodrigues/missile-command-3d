@@ -100,6 +100,8 @@ def draw():
             if asteroid.colide(missile.pos[0], missile.pos[1], missile.pos[2]):
                 expmis.play()  # toca o som da explosao acertando um asteroide
                 asteroids_killed += 1
+                list_missile.remove(missile)
+                del missile
                 break
 
     for missile in list_missile:
