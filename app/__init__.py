@@ -188,6 +188,6 @@ def main():
             glDisable(GL_LIGHT0)
             pg.mixer.music.load("audio/mgameover.mp3")
             pg.mixer.music.play()
-            sleep(4)
+            sleep(5)
             quit() 
         CLOCK.tick(60)
