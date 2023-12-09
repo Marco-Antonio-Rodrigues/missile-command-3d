@@ -93,7 +93,3 @@ def force_mouse_center():
         screen_height // 2,
     )  # Calcula o centro da tela
     pyautogui.moveTo(center_x, center_y)
-
-
-def mod(x):
-    return sqrt(x * x)

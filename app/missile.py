@@ -22,7 +22,7 @@ class Missile:
         self.scale = scale
         self.rotation = rotation
         self.rotation_x = degrees(sin(target[1]))
-        self.texture = Texture("images/texture.png")
+        self.texture = Texture("images/missile.png")
         list_missile.append(self)
 
     def draw(self):

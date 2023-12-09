@@ -7,7 +7,6 @@ from pygame.locals import *
 
 from app.explosion import Explosion
 from app.texture import Texture
-from app.utils import mod
 
 list_asteroids = []
 
@@ -27,7 +26,7 @@ class Asteroids:
         self.n_sectors = sectors  # fatiamento horizontal da esfera
         self.texture = Texture("images/moon.jpg")
 
-        self.ajusteY = mod(0.002 * self.y)  # Razão de ajuste no eixo Y
+        self.ajusteY = abs(0.002 * self.y)  # Razão de ajuste no eixo Y
 
     def draw(self, pos_x=None, pos_y=None, pos_z=None):
         if pos_x:
